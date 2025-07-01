@@ -1,0 +1,69 @@
+{% extends "base.html" %} {% block start %}
+<div class="min-h-screen bg-gray-100">
+  <div class="flex flex-col md:flex-row">
+    {% include "menu.html" %}
+    <!-- Main Content -->
+    <div class="pb-2 md:ml-64 w-full flex items-center flex-col ">
+      <div id="reels-container" class="w-[400px] h-screen space-y-8 md:py-1">
+        <!-- Your reel content -->
+
+        {% for reel in reels %}
+        <div class="h-full w-full relative bg-black text-white">
+          <!-- Video Section -->
+          <video
+            class="reel-video h-full w-full object-cover"
+            src="{% if reel.video %}{{ reel.video.url }}{% else %}/static/default-video.mp4{% endif %}"
+            onclick="toggleMute('{{reel.id}}')"
+            ondblclick="likeunlike('{{reel.id}}')"
+            loop
+          >{{reel.id}}</video>
+          <!-- Caption -->
+          <div class="absolute bottom-20 left-4 space-y-2">
+            <p  class="text-sm">{{reel.caption}}</p>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="absolute bottom-4 right-4 flex flex-col space-y-4">
+            <a href="/profile/{{reel.author}}" class="flex flex-col items-center">
+              <img
+                src="{% if reel.author.profile_picture.url %}{{reel.author.profile_picture.url}}{% else %}/static/default-profile.png{% endif %}"
+                alt="JioCinema"
+                class="h-6 w-6 rounded-full"
+              />
+            </a>
+            <button onclick="likeunlike('{{reel.id}}')" class="flex flex-col items-center">
+              <i id="btn-{{reel.id}}" class="fas fa-heart text-2xl {% if reel.is_liked %}text-red-500{% endif %}"></i>
+              <span id="like-{{reel.id}}">{{reel.like_count}}</span>
+            </button>
+            <button class="flex flex-col items-center">
+              <i  class="fas fa-comment text-2xl"></i>
+              <span>4</span>
+            </button>
+            <button class="flex flex-col items-center">
+              <i class="fas fa-share text-2xl"></i>
+              <span>Share</span>
+            </button>
+            <div class="flex flex-col items-center">
+              <i id="mute-icon-{{reel.id}}" class="fas fa-volume-up text-xl"></i>
+            </div>
+          </div>
+
+          <!-- Your reel  content end  -->
+        </div>
+        {% endfor %}
+        
+      </div>
+      <input
+                type="hidden"
+                name="csrfmiddlewaretoken"
+                value="{{ csrf_token }}"
+           />         
+      <!-- Scrolling -->
+      <div id="loading" class="w-full text-center py-4">
+        <span>Loading...</span>
+      </div>
+    </div>
+  </div>
+  <script src="/static/js/reels.js"></script>
+  {% endblock %}
+</div>

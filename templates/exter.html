@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+<style>
+  body {
+    margin: 0;
+    overflow: hidden; /* Prevent horizontal scrolling */
+  }
+  .reel-container {
+    scroll-snap-align: start; /* Snap each reel into view */
+  }
+</style>
+
+{% block start %}
+<div class="reel-container h-screen w-full relative bg-black text-white">
+  <!-- Video Section -->
+  <video
+    class="reel-video h-full w-full object-cover"
+    src="/media/v1.mp4"
+    muted
+    autoplay
+    loop
+  ></video>
+  <!-- Caption -->
+  <div class="absolute bottom-20 left-4 space-y-2">
+    <p class="text-sm">EISHA FAKE 😡 EISHA'S MOTHER REAL ❤️ ...</p>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="absolute bottom-4 right-4 flex flex-col space-y-4">
+    <div class="flex flex-col items-center">
+      <img
+        src="/static/default-profile.png"
+        alt="JioCinema"
+        class="h-6 w-6 rounded-full"
+      />
+    </div>
+    <button class="flex flex-col items-center">
+      <i class="fas fa-heart text-2xl"></i>
+      <span>63</span>
+    </button>
+    <button class="flex flex-col items-center">
+      <i class="fas fa-comment text-2xl"></i>
+      <span>4</span>
+    </button>
+    <button class="flex flex-col items-center">
+      <i class="fas fa-share text-2xl"></i>
+      <span>Share</span>
+    </button>
+  </div>
+</div>
+
+{% endblock %}
+
+
+
+
+{% for reel in reels %}
+<div class=" h-full w-full relative bg-black text-white">
+  <!-- Video Section -->
+  <!-- <video
+    class="reel-video h-full w-full object-cover"
+    src="/media/v1.mp4"
+    muted
+    autoplay
+    loop
+  ></video> -->
+  <!-- Caption -->
+  <div class="absolute bottom-20 left-4 space-y-2">
+    <p class="text-sm">EISHA FAKE 😡 EISHA'S MOTHER REAL ❤️ ...</p>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="absolute bottom-4 right-4 flex flex-col space-y-4">
+    <div class="flex flex-col items-center">
+      <img
+        src="/static/default-profile.png"
+        alt="JioCinema"
+        class="h-6 w-6 rounded-full"
+      />
+    </div>
+    <button class="flex flex-col items-center">
+      <i class="fas fa-heart text-2xl"></i>
+      <span>63</span>
+    </button>
+    <button class="flex flex-col items-center">
+      <i class="fas fa-comment text-2xl"></i>
+      <span>4</span>
+    </button>
+    <button class="flex flex-col items-center">
+      <i class="fas fa-share text-2xl"></i>
+      <span>Share</span>
+    </button>
+  </div>
+  {% endfor %}

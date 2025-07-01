@@ -1,0 +1,74 @@
+{% extends "base.html" %} {% block start %}
+<div class="min-h-screen bg-gray-100 py-8">
+  <div class="max-w-4xl mx-auto bg-white p-6 shadow-md rounded-lg">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Search Users</h2>
+
+    <form method="get" class="mb-4">
+      <input
+        type="text"
+        id="q"
+        name="q"
+        placeholder="Search by username or bio..."
+        value="{{ query }}"
+        class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 px-4 py-2"
+      />
+    </form>
+    <input
+    type="hidden"
+    name="csrfmiddlewaretoken"
+    value="{{ csrf_token }}"
+  />
+    <div id="search-results" class="space-y-4">
+      
+      {% if users %}
+      <ul class="space-y-4">
+        {% for user in users %}
+        <li
+          class="flex items-center justify-between p-4 bg-gray-50 rounded-lg shadow-sm"
+        >
+          <a href="{% url 'profile' user.username %}">
+            <div class="flex items-center space-x-4">
+              <img
+                src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}/static/default-profile.png{% endif %}"
+                alt="{{user_profile.profile_picture}}"
+                alt="{{ user.username }}"
+                class="h-14 w-14 rounded-full border"
+              />
+              <div class="h-16 overflow-hidden">
+                <h3 class="text-lg font-semibold text-gray-800">
+                  {{ user.username }}
+                </h3>
+                <p class="text-sm text-gray-600">
+                  {{ user.bio|default:"No bio available" }}
+                </p>
+              </div>
+            </div>
+          </a>
+          {% if user.username in followed_users %}
+          <button
+            onclick="follow_unfollow('{{ user.username }}')"
+            type="submit"
+            class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow "
+          >
+            Unfollow
+          </button>
+          {% else %}
+          <button
+            onclick="follow_unfollow('{{ user.username }}')"
+            type="submit"
+            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow "
+          >
+            Follow
+          </button>
+          {% endif%}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-gray-600">No users found for "{{ query }}".</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<script src="/static/js/search.js"></script>
+{% endblock %}

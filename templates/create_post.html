@@ -1,0 +1,64 @@
+{% extends "base.html" %} {% block start %}
+<div class="flex justify-center items-center">
+  <div
+    id="select_file"
+    class="bg-white w-full h-screen  flex justify-center items-center max-w-md rounded-lg shadow-lg p-6"
+  >
+    <button class="bg-blue-500 h-14 rounded-lg p-2 text-white">
+      Select file
+    </button>
+  </div>
+
+  <div
+    id="file_preview"
+    class="bg-white w-full hidden  relative max-w-md rounded-lg shadow-lg p-6"
+  >
+    <!-- Media Preview -->
+    <div
+      id="media-preview"
+      class="h-[500px] bg-gray-100 flex items-center justify-center rounded-md mb-4"
+    >
+      <span id="insert" class="text-gray-400">No media selected</span>
+    </div>
+    <input id="file" type="file" class="hidden" value="" />
+    <form action="" method="POST" enctype="multipart/form-data" >
+        {% csrf_token %}
+      <input
+        type="file"
+        id="create-post-icon"
+        name="media_file"
+        accept="image/*,video/*"
+        class="hidden"
+      />
+      <!-- Caption -->
+      <div class="w-full absolute bottom-20 pr-12">
+        <textarea
+          id="caption"
+          rows="3"
+          name="caption"
+          placeholder="Write a caption..."
+          class="w-full  border-none text-gray-500"
+        ></textarea>
+      </div>
+      <!-- Buttons -->
+      <div class="absolute bottom-12 w-full pr-12">
+        <div class="flex justify-between w-full">
+          <button
+            class="bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+            onclick="cancelPost()"
+          >
+            Cancel
+          </button>
+          <button
+            class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+            onclick="submitPost()"
+          >
+            Post
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="/static/js/creatpost.js"></script>
+{% endblock %}

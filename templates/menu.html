@@ -1,0 +1,122 @@
+{% block menu %}
+<!-- Left Sidebar (Menu Section) -->
+<nav id ="navbar"
+  class="w-full md:w-1/5 bg-white md:h-screen border-r shadow-lg fixed md:top-0 md:left-0 bottom-0 z-50"
+>
+  <div
+    class="flex md:flex-col items-center justify-between px-4 py-2 md:py-6 space-x-4 md:space-x-0 md:space-y-2"
+  >
+    <!-- Mobile Menu (Bottom Navigation) -->
+    <div class="flex justify-around w-full md:hidden">
+      <a
+        href="{% url 'index' %}"
+        class="text-gray-500 hover:text-blue-500 flex flex-col items-center"
+      >
+        <i class="fas fa-home text-xl"></i>
+        <span class="text-sm">Home</span>
+      </a>
+      <a
+        href="{% url 'search' %}"
+        class="text-gray-500 hover:text-blue-500 flex flex-col items-center"
+      >
+        <i class="fas fa-search text-xl"></i>
+        <span class="text-sm">Search</span>
+      </a>
+      <a
+        href="{% url 'create_post' %}"
+        class="text-gray-500 hover:text-blue-500 flex flex-col items-center"
+      >
+        <i class="fas fa-plus-square text-xl"></i>
+        <span class="text-sm">Create</span>
+      </a>
+      <a
+        href="{% url 'reels' %}"
+        class="text-gray-500 hover:text-blue-500 flex flex-col items-center"
+      >
+        <i class="fas fa-video text-xl"></i>
+        <span class="text-sm">Reels</span>
+      </a>
+      <a
+        href="/profile/{{user.username}}"
+        class="text-gray-500 hover:text-blue-500 flex flex-col items-center"
+      >
+        <i class="fas fa-bars text-xl"></i>
+        <span class="text-sm">More</span>
+      </a>
+    </div>
+
+    <!-- Desktop Menu -->
+    <div class="hidden md:flex flex-col items-center space-y-2 w-52">
+      <!-- Logo -->
+      <a href="{% url 'index' %}" class="text-blue-500 text-2xl font-bold mb-6">
+        <i class="fab fa-instagram"></i> MyApp
+      </a>
+      <!-- Menu Items -->
+      <a
+        href="{% url 'index' %}"
+        class="text-gray-500 hover:text-blue-500 flex items-center space-x-4 w-full px-6 py-2"
+      >
+        <i class="fas fa-home text-xl"></i>
+        <span class="text-lg">Home</span>
+      </a>
+      <a
+        href="{% url 'search' %}"
+        class="text-gray-500 hover:text-blue-500 flex items-center space-x-4 w-full px-6 py-2"
+      >
+        <i class="fas fa-search text-xl"></i>
+        <span class="text-lg">Search</span>
+      </a>
+      <a
+        href="{% url 'index' %}"
+        class="text-gray-500 hover:text-blue-500 flex items-center space-x-4 w-full px-6 py-2"
+      >
+        <i class="fas fa-compass text-xl"></i>
+        <span class="text-lg">Explore</span>
+      </a>
+      <a
+        href="{% url 'reels' %}"
+        class="text-gray-500 hover:text-blue-500 flex items-center space-x-4 w-full px-6 py-2"
+      >
+        <i class="fas fa-video text-xl"></i>
+        <span class="text-lg">Reels</span>
+      </a>
+      <a
+        href="{% url 'index' %}"
+        class="text-gray-500 hover:text-blue-500 flex items-center space-x-4 w-full px-6 py-2"
+      >
+        <i class="fas fa-envelope text-xl"></i>
+        <span class="text-lg">Messages</span>
+      </a>
+      <a
+        href="{% url 'index' %}"
+        class="text-gray-500 hover:text-blue-500 flex items-center space-x-4 w-full px-6 py-2"
+      >
+        <i class="fas fa-bell text-xl"></i>
+        <span class="text-lg">Notifications</span>
+      </a>
+      <!-- create post -->
+      <a href="{% url 'create_post' %}"
+      class="text-gray-500 hover:text-blue-500 flex items-center space-x-4 w-full px-6 py-2">
+      <i  class="fas fa-plus-square text-xl"></i>
+      <span class="text-lg">Create</span>
+
+      </a>
+      <!-- end of create post -->
+      <a
+        href="/profile/{{user.username}}"
+        class="text-gray-500 hover:text-blue-500 flex items-center space-x-4 w-full px-6 py-2"
+      >
+        <i class="fas fa-user-circle text-xl"></i>
+        <span class="text-lg">Profile</span>
+      </a>
+      <a
+        href="{% url 'index' %}"
+        class="text-gray-500 hover:text-blue-500 flex items-center space-x-4 w-full px-6 py-2"
+      >
+        <i class="fas fa-bars text-xl"></i>
+        <span class="text-lg">More</span>
+      </a>
+    </div>
+  </div>
+</nav>
+{% endblock %}

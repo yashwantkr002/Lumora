@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block start %}
+
+<div class=" min-h-screen bg-gray-100">
+  {% include "menu.html" %}
+  <div class=" md:ml-64  space-y-8 pb-2">
+    <div class="bg-white shadow-md rounded-lg">  
+      <div class="md:px-28 " >
+<!-- main -->
+        <div class="flex items-center p-4">
+          <img
+            src="{% if post.author.profile_picture %}{{ post.author.profile_picture.url }}{% else %}/static/default-profile.png{% endif %}"
+            alt="{{ post.author.username }}"
+            class="h-10 w-10 rounded-full border"
+          />
+          <div class="ml-4">
+            <h2 class="font-bold text-gray-800">{{ post.author.username }}</h2>
+            <p class="text-sm text-gray-500">{{ post.created_at }}</p>
+          </div>
+        </div>
+        <div class="flex justify-center">
+          {% if post.image %}
+          <img
+            src="{{ post.image.url }}"
+            alt="Post Image"
+            class="w-[95%] md:w-[380px] md:h-[500px] sm:h-[500px] sm:w-[300px] object-cover rounded-lg"
+          />
+          {% else %}
+          <video
+            controls
+            src="{{ post.video.url }}"
+            class="w-[95%] md:w-[380px] md:h-[500px] sm:h-[500px] sm:w-[300px] object-cover rounded-lg"
+          >
+            Your browser does not support the video tag.
+          </video>
+          {% endif %}
+        </div>
+        <div class="flex items-center justify-between px-4 py-2 ">
+          <div class="flex items-center space-x-4">
+            <button class="text-gray-500 {% if is_liked %}text-red-500{% endif %} " onclick="likeunlike('{{post.id}}')" >
+              <i  class="fas fa-heart"></i> Likes <span id="like" > {{ like }}</span>
+            </button>
+            <input
+                  type="hidden"
+                  name="csrfmiddlewaretoken"
+                  value="{{ csrf_token }}"
+             />
+            <button class="text-gray-500 hover:text-blue-500">
+              <i class="fas fa-comment"></i> Comment
+            </button>
+            <button class="text-gray-500 hover:text-green-500">
+              <i class="fas fa-share"></i> Share
+            </button>
+          </div>
+        </div>
+        <div class="px-4 py-2">
+          <p>
+            <span class="font-bold text-gray-800">{{ post.author.username }}</span>
+            <span class="text-gray-600">{{ post.caption }}</span>
+          </p>
+          <p>
+            <a href="#" class="text-blue-500 hover:underline">View All Comments</a>
+          </p>
+          <form method="post" class="mt-2">
+            {% csrf_token %}
+            <input
+              type="text"
+              name="comment"
+              placeholder="Add a comment..."
+              class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 px-4 py-2"
+            />
+          </form>
+        </div>
+
+      </div>
+    
+    </div>
+
+  </div>  
+    
+
+</div>
+
+
+<script src="/static/js/post_detail.js
+"></script>
+{% endblock %}
