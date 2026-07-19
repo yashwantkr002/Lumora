@@ -1,80 +1,70 @@
-# Mvideos - A Django Video Sharing Platform
+﻿# Lumora
 
-This is a Django-based web application for sharing videos, similar to a social media platform for videos. Users can create accounts, upload videos (reels), manage their profiles, and interact with content.
+Lumora ek full-stack social media platform hai jo Django ke saath banaya gaya hai. Is project mein user authentication, profiles, posts, reels, likes, comments, search aur responsive UI ka support hai.
 
-## Project Structure
+## Features
 
-- `Mvideos/`: Main Django project configuration, including settings, URLs, and WSGI/ASGI configurations.
-- `app/`: The core Django application containing models, views, templates, and static files for user management, posts, and other functionalities.
-- `media/`: Stores user-uploaded content like post images, profile pictures, and video reels.
-- `static/`: Contains static assets such as CSS, JavaScript, and images.
-- `templates/`: Houses HTML templates for rendering web pages.
-- `env/`: A Python virtual environment for managing project dependencies.
-- `db.sqlite3`: The default SQLite database file.
-- `manage.py`: Django's command-line utility for administrative tasks.
+- User registration, login aur logout
+- User profile management
+- Post creation aur post detail view
+- Image/video upload support
+- Reels support
+- Likes aur comments
+- Search functionality
+- Password reset aur OTP-based verification
+- Responsive frontend design
 
-## Features (Inferred)
+## Tech Stack
 
-- User authentication (registration, login, password reset)
-- User profiles with profile pictures
-- Video (reels) uploading and display
-- Image posting
-- Admin interface for managing content and users
+- Python
+- Django
+- SQLite (current setup) / PostgreSQL support possible
+- Tailwind CSS
+- JavaScript
+- Django Allauth
+- Django Cleanup / Session Timeout
 
-## Setup Instructions
+## Folder Structure
 
-To set up and run this project locally, follow these steps:
+```text
+Lumora/
+├── app/
+│   ├── migrations/
+│   ├── templates/
+│   └── views.py
+├── static/
+├── templates/
+├── media/
+├── theme/
+├── manage.py
+├── requirements.txt
+├── db.sqlite3
+└── README.md
+```
 
-1.  **Clone the repository (if applicable):**
+## Installation
 
-    ```bash
-    git clone <repository_url>
-    cd Mvideos
-    ```
+1. Virtual environment activate karen:
+   ```bash
+   env\\Scripts\\activate
+   ```
 
-2.  **Create a virtual environment and activate it:**
+2. Dependencies install karen:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-    ```bash
-    python -m venv env
-    .\env\Scripts\activate
-    ```
+3. Database migrations run karen:
+   ```bash
+   python manage.py migrate
+   ```
 
-3.  **Install dependencies:**
+4. Development server start karen:
+   ```bash
+   python manage.py runserver
+   ```
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+## Notes
 
-4.  **Apply database migrations:**
-
-    ```bash
-    python manage.py migrate
-    ```
-
-5.  **Create a superuser (for admin access):**
-
-    ```bash
-    python manage.py createsuperuser
-    ```
-
-6.  **Run the development server:**
-
-    ```bash
-    python manage.py runserver
-    ```
-
-    The application will be accessible at `http://127.0.0.1:8000/`.
-
-## Technologies Used
-
--   Django (Python Web Framework)
--   SQLite (Default Database)
--   HTML, CSS, JavaScript
-
-## Contributing
-
-(Add instructions for contributing if this is an open-source project)
-
-## License
-
-(Specify the project's license)
+- Project mein current mein SQLite database use ho rahi hai.
+- Static aur media folders images, posts, reels aur frontend assets ke liye use ho rahe hain.

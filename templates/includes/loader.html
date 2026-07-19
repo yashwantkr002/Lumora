@@ -1,0 +1,62 @@
+{% load static %}
+<div
+    id="page-loader"
+    class="fixed inset-0 z-[9999] flex items-center justify-center bg-white dark:bg-slate-900"
+>
+
+    <div
+        class="flex flex-col items-center gap-6"
+    >
+
+        <!-- Logo -->
+
+        <img
+            src="{% static 'images/logo.png' %}"
+            alt="Lumora"
+            class="h-16 w-16 animate-pulse"
+        >
+
+        <!-- Spinner -->
+
+        <div
+            class="h-12 w-12 animate-spin rounded-full border-4 border-slate-300 border-t-primary"
+        ></div>
+
+        <!-- Loading Text -->
+
+        <p
+            class="text-sm font-medium text-slate-500 dark:text-slate-400"
+        >
+
+            Loading Lumora...
+
+        </p>
+
+    </div>
+
+</div>
+
+<script>
+
+    window.addEventListener(
+        "load",
+        function () {
+
+            const loader = document.getElementById(
+                "page-loader"
+            );
+
+            loader.classList.add(
+                "opacity-0"
+            );
+
+            setTimeout(() => {
+
+                loader.remove();
+
+            }, 300);
+
+        }
+    );
+
+</script>

@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+Edit Profile | Lumora
+{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-4xl">
+
+    <div
+        class="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg dark:border-slate-800 dark:bg-slate-900"
+    >
+
+        <div class="mb-8">
+
+            <h1
+                class="text-3xl font-bold"
+            >
+
+                Edit Profile
+
+            </h1>
+
+            <p
+                class="mt-2 text-slate-500"
+            >
+
+                Update your profile information.
+
+            </p>
+
+        </div>
+
+        <form
+            method="post"
+            enctype="multipart/form-data"
+            class="space-y-8"
+        >
+
+            {% csrf_token %}
+
+            <!-- Cover -->
+
+            <div>
+
+                <label
+                    class="mb-2 block font-semibold"
+                >
+
+                    Cover Photo
+
+                </label>
+
+                {{ form.cover_photo }}
+
+            </div>
+
+            <!-- Avatar -->
+
+            <div>
+
+                <label
+                    class="mb-2 block font-semibold"
+                >
+
+                    Profile Picture
+
+                </label>
+
+                {{ form.avatar }}
+
+            </div>
+
+            <!-- Basic Information -->
+
+            <div
+                class="grid gap-6 md:grid-cols-2"
+            >
+
+                <div>
+
+                    <label
+                        class="mb-2 block font-semibold"
+                    >
+
+                        First Name
+
+                    </label>
+
+                    {{ form.first_name }}
+
+                </div>
+
+                <div>
+
+                    <label
+                        class="mb-2 block font-semibold"
+                    >
+
+                        Last Name
+
+                    </label>
+
+                    {{ form.last_name }}
+
+                </div>
+
+                <div>
+
+                    <label
+                        class="mb-2 block font-semibold"
+                    >
+
+                        Username
+
+                    </label>
+
+                    {{ form.username }}
+
+                </div>
+
+                <div>
+
+                    <label
+                        class="mb-2 block font-semibold"
+                    >
+
+                        Email
+
+                    </label>
+
+                    {{ form.email }}
+
+                </div>
+
+            </div>
+
+            <!-- Bio -->
+
+            <div>
+
+                <label
+                    class="mb-2 block font-semibold"
+                >
+
+                    Bio
+
+                </label>
+
+                {{ form.bio }}
+
+            </div>
+
+            <!-- Website -->
+
+            <div>
+
+                <label
+                    class="mb-2 block font-semibold"
+                >
+
+                    Website
+
+                </label>
+
+                {{ form.website }}
+
+            </div>
+
+            <!-- Location -->
+
+            <div>
+
+                <label
+                    class="mb-2 block font-semibold"
+                >
+
+                    Location
+
+                </label>
+
+                {{ form.location }}
+
+            </div>
+
+            <!-- Buttons -->
+
+            <div
+                class="flex justify-end gap-4"
+            >
+
+                <a
+                    href="{% url 'profile' request.user.username %}"
+                    class="rounded-xl border border-slate-300 px-6 py-3 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                >
+
+                    Cancel
+
+                </a>
+
+                <button
+                    type="submit"
+                    class="rounded-xl bg-primary px-6 py-3 font-semibold text-white hover:opacity-90"
+                >
+
+                    Save Changes
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,81 @@
+<div
+    class="mb-6 flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm md:flex-row md:items-center md:justify-between dark:border-slate-800 dark:bg-slate-900"
+>
+
+    <!-- =========================================== -->
+    <!-- Unread Count -->
+    <!-- =========================================== -->
+
+    <div>
+
+        <h2
+            class="text-xl font-semibold"
+        >
+
+            Notifications
+
+        </h2>
+
+        <p
+            class="mt-1 text-sm text-slate-500"
+        >
+
+            {{ unread_count }}
+
+            unread notification{{ unread_count|pluralize }}
+
+        </p>
+
+    </div>
+
+    <!-- =========================================== -->
+    <!-- Actions -->
+    <!-- =========================================== -->
+
+    <div
+        class="flex flex-wrap items-center gap-3"
+    >
+
+        <!-- Mark All Read -->
+
+        <form
+            method="post"
+            action="{% url 'notification:mark_all_read' %}"
+        >
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+            >
+
+                Mark all as read
+
+            </button>
+
+        </form>
+
+        <!-- Delete Read -->
+
+        <form
+            method="post"
+            action="{% url 'notification:delete_read' %}"
+        >
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:border-red-700 dark:hover:bg-red-900/20"
+            >
+
+                Clear read
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

@@ -1,19 +1,178 @@
-{% load static tailwind_tags %}
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-    <title>Mvideos</title>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-		rel="stylesheet">
-		{% tailwind_css %}
-	</head>
-    <body class="bg-gray-50 box-border font-serif leading-normal tracking-normal">
-		{% block start %}
-		{% endblock  %}
+{% load static %}
+<!doctype html>
+<html lang="en" class="h-full scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
 
-	</body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <meta name="description" content="Lumora - Modern Social Media Platform" />
+
+    <meta name="keywords" content="Lumora, Social Media, Django" />
+
+    <meta name="author" content="Yashwant Das" />
+
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+
+    <title>{% block title %} Lumora {% endblock %}</title>
+
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" />
+
+    <!-- Google Fonts -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+
+    <!-- Tailwind CSS -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+
+            colors: {
+              primary: "#6366F1",
+
+              secondary: "#8B5CF6",
+            },
+          },
+        },
+      };
+    </script>
+
+    {% block styles %} {% endblock %}
+  </head>
+  <body
+    class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300"
+  >
+    <!-- Loader -->
+
+    {% include "includes/loader.html" %} {% include "includes/navbar.html" %}
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-12 gap-6 py-6">
+        <!-- Left Sidebar -->
+
+        <aside class="hidden lg:block lg:col-span-3">
+          {% if user.is_authenticated %} {% include "includes/sidebar.html" %}
+          {% endif %}
+        </aside>
+
+        <!-- Main Content -->
+
+        <main class="col-span-12 lg:col-span-6">
+          {% if user.is_authenticated %} {% include "includes/messages.html" %}
+          {% endif %} {% block content %} {% endblock %}
+        </main>
+
+        <!-- Right Sidebar -->
+
+      <aside class="hidden xl:block xl:col-span-3">
+        {% if user.is_authenticated %}
+          {% include "includes/right_sidebar.html" %}
+        {% endif %}
+      </aside>
+      </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+
+    {% include "includes/mobile_nav.html" %}
+
+    <!-- Footer -->
+
+    {% include "includes/footer.html" %}
+
+    <!-- Back To Top Button -->
+
+    <button
+      id="backToTop"
+      class="hidden fixed bottom-6 right-6 h-12 w-12 rounded-full bg-primary text-white shadow-lg hover:scale-110 transition-all duration-300"
+    >
+      <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- Theme Toggle -->
+
+    {% include "includes/theme_toggle.html" %}
+
+    <!-- Alpine.js -->
+
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+
+    <!-- HTMX -->
+
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+
+    <!-- Back To Top -->
+
+    <script>
+      const backToTop = document.getElementById("backToTop");
+
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+          backToTop.classList.remove("hidden");
+        } else {
+          backToTop.classList.add("hidden");
+        }
+      });
+
+      backToTop.addEventListener("click", () => {
+        window.scrollTo({
+          top: 0,
+
+          behavior: "smooth",
+        });
+      });
+    </script>
+
+    <!-- Theme -->
+
+    <script>
+      const theme = localStorage.getItem("theme");
+
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
+
+    {% include "components/common/toast.html" %}
+
+    <!-- Custom JS -->
+
+    {% block scripts %}
+    <script src="{% static 'js/core/app.js' %}"></script>
+    <script src="{% static 'js/core/utils.js' %}"></script>
+    <script src="{% static 'js/core/theme.js' %}"></script>
+    {% endblock %}
+
+    {% block extra_js %}
+    {% endblock %}
+
+  </body>
 </html>

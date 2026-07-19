@@ -1,0 +1,72 @@
+<form
+    method="post"
+    enctype="multipart/form-data"
+    class="space-y-6"
+>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+
+        <div
+            class="rounded-xl border border-red-200 bg-red-50 p-4 text-red-600"
+        >
+
+            {{ form.non_field_errors }}
+
+        </div>
+
+    {% endif %}
+
+    {% for field in form %}
+
+        <div>
+
+            <label
+                for="{{ field.id_for_label }}"
+                class="mb-2 block text-sm font-semibold"
+            >
+
+                {{ field.label }}
+
+            </label>
+
+            {{ field }}
+
+            {% if field.help_text %}
+
+                <p
+                    class="mt-1 text-sm text-slate-500"
+                >
+
+                    {{ field.help_text }}
+
+                </p>
+
+            {% endif %}
+
+            {% if field.errors %}
+
+                <div
+                    class="mt-2 text-sm text-red-500"
+                >
+
+                    {{ field.errors }}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    {% endfor %}
+
+    <button
+        type="submit"
+        class="rounded-xl bg-primary px-6 py-3 font-medium text-white transition hover:opacity-90"
+    >
+
+        {{ submit_label|default:"Save" }}
+
+    </button>
+
+</form>

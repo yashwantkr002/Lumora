@@ -1,0 +1,66 @@
+<div
+    class="rounded-2xl border border-dashed border-slate-300 bg-white px-8 py-16 text-center shadow-sm dark:border-slate-700 dark:bg-slate-900"
+>
+
+    <!-- =========================================== -->
+    <!-- Icon -->
+    <!-- =========================================== -->
+
+    <div
+        class="mb-6 flex justify-center"
+    >
+
+        <div
+            class="flex h-20 w-20 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800"
+        >
+
+            <i
+                class="fa-regular fa-bell text-4xl text-slate-400"
+            ></i>
+
+        </div>
+
+    </div>
+
+    <!-- =========================================== -->
+    <!-- Title -->
+    <!-- =========================================== -->
+
+    <h2
+        class="text-2xl font-bold"
+    >
+
+        No Notifications
+
+    </h2>
+
+    <!-- =========================================== -->
+    <!-- Description -->
+    <!-- =========================================== -->
+
+    <p
+        class="mx-auto mt-4 max-w-md text-slate-500"
+    >
+
+        You're all caught up.
+
+        When someone likes your post, comments,
+        follows you, or mentions you,
+        notifications will appear here.
+
+    </p>
+
+    <!-- =========================================== -->
+    <!-- Action -->
+    <!-- =========================================== -->
+
+    <a
+        href="{% url 'post:feed' %}"
+        class="mt-8 inline-flex items-center rounded-xl bg-primary px-6 py-3 font-medium text-white transition hover:opacity-90"
+    >
+
+        Explore Posts
+
+    </a>
+
+</div>

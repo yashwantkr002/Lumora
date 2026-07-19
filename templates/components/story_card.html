@@ -1,0 +1,113 @@
+<a
+    href="{% url 'story_detail' story.id %}"
+    class="group block overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
+>
+
+    <!-- Story Media -->
+
+    <div class="relative">
+
+        {% if story.image %}
+
+            <img
+                src="{{ story.image.url }}"
+                alt="{{ story.caption|default:'Story' }}"
+                class="aspect-[9/16] w-full object-cover transition duration-300 group-hover:scale-105"
+            >
+
+        {% elif story.video %}
+
+            <video
+                class="aspect-[9/16] w-full object-cover"
+                preload="metadata"
+                muted
+            >
+
+                <source
+                    src="{{ story.video.url }}"
+                    type="video/mp4"
+                >
+
+            </video>
+
+            <div
+                class="absolute inset-0 flex items-center justify-center"
+            >
+
+                <div
+                    class="rounded-full bg-black/50 p-4 text-white"
+                >
+
+                    <i class="fa-solid fa-play text-xl"></i>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+        <!-- User -->
+
+        <div
+            class="absolute left-4 top-4 flex items-center gap-3 rounded-full bg-black/40 px-3 py-2 backdrop-blur"
+        >
+
+            <img
+                src="{{ story.author.profile.avatar.url }}"
+                alt="{{ story.author.username }}"
+                class="h-10 w-10 rounded-full border-2 border-primary object-cover"
+            >
+
+            <div>
+
+                <p
+                    class="text-sm font-semibold text-white"
+                >
+
+                    {{ story.author.username }}
+
+                </p>
+
+                <p
+                    class="text-xs text-white/80"
+                >
+
+                    {{ story.created_at|timesince }} ago
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+
+    <div class="p-4">
+
+        {% if story.caption %}
+
+            <p
+                class="line-clamp-2 text-sm text-slate-600 dark:text-slate-300"
+            >
+
+                {{ story.caption }}
+
+            </p>
+
+        {% else %}
+
+            <p
+                class="text-sm italic text-slate-400"
+            >
+
+                No caption
+
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</a>

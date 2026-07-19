@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+Story | Lumora
+{% endblock %}
+
+{% block content %}
+
+<div
+    class="mx-auto flex min-h-[85vh] max-w-3xl items-center justify-center"
+>
+
+    <div
+        class="relative w-full overflow-hidden rounded-3xl bg-black shadow-2xl"
+    >
+
+        <!-- Progress -->
+
+        <div
+            class="absolute left-0 right-0 top-0 z-20 flex gap-1 p-3"
+        >
+
+            <div
+                class="h-1 flex-1 rounded-full bg-white/30"
+            >
+
+                <div
+                    id="story-progress"
+                    class="h-full w-0 rounded-full bg-white transition-all"
+                ></div>
+
+            </div>
+
+        </div>
+
+        <!-- Header -->
+
+        <div
+            class="absolute left-0 right-0 top-4 z-30 flex items-center justify-between px-5"
+        >
+
+            <div
+                class="flex items-center gap-3"
+            >
+
+                {% if story.author.profile.avatar %}
+                    <img
+                        src="{{ story.author.profile.avatar.url }}"
+                        alt="{{ story.author.username }}"
+                        class="h-11 w-11 rounded-full border-2 border-white object-cover"
+                    >
+                {% else %}
+                    <div
+                        class="flex h-11 w-11 items-center justify-center rounded-full border-2 border-white bg-slate-700 text-sm font-semibold text-white"
+                    >
+                        {{ story.author.username|first|upper }}
+                    </div>
+                {% endif %}
+
+                <div>
+
+                    <a
+                        href="{% url 'profile' story.author.username %}"
+                        class="font-semibold text-white"
+                    >
+
+                        {{ story.author.username }}
+
+                    </a>
+
+                    <p
+                        class="text-xs text-white/80"
+                    >
+
+                        {{ story.created_at|timesince }} ago
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <a
+                href="{% url 'story:feed_story' %}"
+                class="rounded-full bg-black/40 p-2 text-white"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </a>
+
+        </div>
+
+        <!-- Media -->
+
+        {% if story.video %}
+
+            <video
+                controls
+                autoplay
+                class="aspect-[9/16] w-full bg-black object-contain"
+            >
+
+                <source
+                    src="{{ story.video.url }}"
+                    type="video/mp4"
+                >
+
+            </video>
+
+        {% elif story.image %}
+
+            <img
+                src="{{ story.image.url }}"
+                alt="Story"
+                class="aspect-[9/16] w-full object-cover"
+            >
+
+        {% endif %}
+
+        <!-- Caption -->
+
+        {% if story.caption %}
+
+            <div
+                class="absolute bottom-20 left-0 right-0 px-6 text-center text-white"
+            >
+
+                <p
+                    class="rounded-xl bg-black/40 px-4 py-3 backdrop-blur"
+                >
+
+                    {{ story.caption }}
+
+                </p>
+
+            </div>
+
+        {% endif %}
+
+        <!-- Navigation -->
+
+        <a
+            href="{% url 'previous_story' story.id %}"
+            class="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-3 text-white"
+        >
+
+            <i class="fa-solid fa-chevron-left"></i>
+
+        </a>
+
+        <a
+            href="{% url 'next_story' story.id %}"
+            class="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-3 text-white"
+        >
+
+            <i class="fa-solid fa-chevron-right"></i>
+
+        </a>
+
+        <!-- Reply -->
+
+        <div
+            class="absolute bottom-4 left-0 right-0 px-5"
+        >
+
+            <form
+                method="post"
+                action="{% url 'reply_story' story.id %}"
+                class="flex gap-3"
+            >
+
+                {% csrf_token %}
+
+                <input
+                    type="text"
+                    name="message"
+                    placeholder="Reply..."
+                    class="flex-1 rounded-full border-0 bg-white/20 px-5 py-3 text-white placeholder:text-white/70 backdrop-blur focus:outline-none"
+                >
+
+                <button
+                    type="submit"
+                    class="rounded-full bg-primary px-5 text-white"
+                >
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const progress =
+    document.getElementById(
+        "story-progress"
+    );
+
+let width = 0;
+
+const timer = setInterval(() => {
+
+    width += 1;
+
+    progress.style.width =
+        width + "%";
+
+    if (width >= 100) {
+
+        clearInterval(timer);
+
+        window.location.href =
+            "{% url 'next_story' story.id %}";
+
+    }
+
+}, 100);
+
+</script>
+
+{% endblock %}

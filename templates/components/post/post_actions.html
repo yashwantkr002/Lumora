@@ -1,0 +1,85 @@
+<div class="p-5">
+  <!-- =================================================== -->
+  <!-- Action Buttons -->
+  <!-- =================================================== -->
+
+  <div class="mb-4 flex items-center justify-between">
+    <div class="flex items-center gap-6">
+      <!-- =========================================== -->
+      <!-- Like -->
+      <!-- =========================================== -->
+
+      <button
+        type="button"
+        data-like-button
+        data-url="{% url 'like:toggle' post.id %}"
+        class="flex items-center gap-2 transition hover:scale-110"
+        title="Like"
+      >
+        <i
+          class="{% if post.is_liked %} fa-solid text-red-500 {% else %} fa-regular {% endif %} fa-heart text-2xl"
+          data-like-icon
+        ></i>
+
+        <span data-like-count class="text-sm font-medium">
+          {{ post.likes_count }}
+        </span>
+      </button>
+
+      <!-- =========================================== -->
+      <!-- Comment -->
+      <!-- =========================================== -->
+
+      <a
+        href="{% url 'post:detail' post.id %}#comments"
+        class="transition hover:scale-110"
+        title="Comment"
+      >
+        <i class="fa-regular fa-comment text-2xl"></i>
+      </a>
+
+      <!-- =========================================== -->
+      <!-- Share -->
+      <!-- =========================================== -->
+
+      <button type="button" class="transition hover:scale-110" title="Share">
+        <i class="fa-regular fa-paper-plane text-2xl"></i>
+      </button>
+    </div>
+
+    <!-- =========================================== -->
+    <!-- Save -->
+    <!-- =========================================== -->
+
+    <button
+      type="button"
+      data-save-button
+      data-post-id="{{ post.id }}"
+      data-url="{% url 'save:toggle' post.id %}"
+      class="transition hover:scale-110"
+      title="Save"
+    >
+      <i
+        data-save-icon
+        class="{% if post.is_saved %} fa-solid {% else %} fa-regular {% endif %} fa-bookmark text-2xl"
+      ></i>
+    </button>
+  </div>
+
+  <!-- =================================================== -->
+  <!-- Statistics -->
+  <!-- =================================================== -->
+
+  <div class="space-y-1">
+    <p class="font-semibold">
+      <span data-like-total> {{ post.likes_count }} </span>
+
+      likes
+    </p>
+
+    <p class="text-sm text-slate-500">{{ post.comments_count }} comments</p>
+
+    <p class="text-sm text-slate-500">{{ post.views_count }} views</p>
+  </div>
+</div>
+    

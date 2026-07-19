@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+Create Post
+{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-3xl">
+
+    <h1 class="mb-8 text-3xl font-bold">
+
+        Create Post
+
+    </h1>
+
+    {% include "components/post/post_form.html" with submit_label="Publish" %}
+
+</div>
+
+{% endblock %}

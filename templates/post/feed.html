@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home | Lumora
+{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-3xl space-y-6">
+
+    <!-- Feed Header -->
+
+    <div
+        class="flex items-center justify-between"
+    >
+
+        <div>
+
+            <h1
+                class="text-3xl font-bold"
+            >
+
+                Home Feed
+
+            </h1>
+
+            <p
+                class="mt-1 text-slate-500"
+            >
+
+                Discover the latest posts from people you follow.
+
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'post:create' %}"
+            class="rounded-xl bg-primary px-5 py-3 font-medium text-white transition hover:opacity-90"
+        >
+
+            Create Post
+
+        </a>
+
+    </div>
+
+    <!-- Feed -->
+
+    {% if posts %}
+
+        <div
+            class="space-y-6"
+        >
+
+            {% for post in posts %}
+
+                {% include "components/post/post_card.html" %}
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        {% include "components/post/empty_posts.html" %}
+
+    {% endif %}
+
+    <!-- Pagination -->
+
+    {% include "components/post/pagination.html" with page_obj=page_obj %}
+
+</div>
+
+{% endblock %}

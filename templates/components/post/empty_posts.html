@@ -1,0 +1,36 @@
+<div
+    class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center shadow-sm dark:border-slate-700 dark:bg-slate-900"
+>
+
+    <i
+        class="fa-regular fa-images mb-5 text-6xl text-slate-400"
+    ></i>
+
+    <h2
+        class="text-2xl font-semibold"
+    >
+
+        No Posts Yet
+
+    </h2>
+
+    <p
+        class="mt-3 text-slate-500"
+    >
+
+        Your feed is empty.
+
+        Follow more people or create your first post.
+
+    </p>
+
+    <a
+        href="{% url 'post:create' %}"
+        class="mt-8 inline-block rounded-xl bg-primary px-6 py-3 font-medium text-white transition hover:opacity-90"
+    >
+
+        Create Your First Post
+
+    </a>
+
+</div>

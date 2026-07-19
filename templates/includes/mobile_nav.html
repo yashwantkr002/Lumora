@@ -1,0 +1,110 @@
+<nav
+    class="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white/95 backdrop-blur-lg dark:border-slate-800 dark:bg-slate-900/95 lg:hidden"
+>
+
+    <div
+        class="grid grid-cols-5"
+    >
+
+        <a
+            href="{% url 'post:feed' %}"
+            class="flex flex-col items-center py-3 text-slate-600 transition hover:text-primary dark:text-slate-300"
+        >
+
+            <i class="fa-solid fa-house text-xl"></i>
+
+            <span class="mt-1 text-xs">
+
+                Home
+
+            </span>
+
+        </a>
+
+        <a
+            href="{% url 'search' %}"
+            class="flex flex-col items-center py-3 text-slate-600 transition hover:text-primary dark:text-slate-300"
+        >
+
+            <i class="fa-solid fa-magnifying-glass text-xl"></i>
+
+            <span class="mt-1 text-xs">
+
+                Search
+
+            </span>
+
+        </a>
+
+        <a
+            href="{% url 'post:create' %}"
+            class="flex flex-col items-center py-3 text-primary"
+        >
+
+            <div
+                class="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg"
+            >
+
+                <i class="fa-solid fa-plus"></i>
+
+            </div>
+
+        </a>
+
+        <a
+            href="{% url 'notification:list' %}"
+            class="relative flex flex-col items-center py-3 text-slate-600 transition hover:text-primary dark:text-slate-300"
+        >
+
+            <i class="fa-solid fa-bell text-xl"></i>
+
+            {% if unread_notifications_count %}
+
+                <span
+                    class="absolute right-5 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white"
+                >
+
+                    {{ unread_notifications_count }}
+
+                </span>
+
+            {% endif %}
+
+            <span class="mt-1 text-xs">
+
+                Alerts
+
+            </span>
+
+        </a>
+
+        <a
+            {% comment %} href="{% url 'profile' request.user.username %}" {% endcomment %}
+            class="flex flex-col items-center py-3 text-slate-600 transition hover:text-primary dark:text-slate-300"
+        >
+
+            {% if request.user.profile.avatar %}
+                <img
+                    src="{{ request.user.profile.avatar.url }}"
+                    alt="{{ request.user.username }}"
+                    class="h-7 w-7 rounded-full object-cover"
+                >
+            {% else %}
+                <div
+                    class="flex h-7 w-7 items-center justify-center rounded-full bg-slate-300 text-[10px] font-semibold text-slate-700"
+                >
+                    {{ request.user.username|first|upper }}
+                </div>
+            {% endif %}
+
+            <span class="mt-1 text-xs">
+
+                Profile
+
+            </span>
+
+        </a>
+
+    </div>
+
+</nav>
