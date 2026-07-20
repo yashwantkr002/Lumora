@@ -99,30 +99,30 @@ export function trimInputs(form) {
  * @param {HTMLFormElement} form
  * @returns {boolean}
  */
-export function validateRequired(form) {
+// export function validateRequired(form) {
 
-    let valid = true;
+//     let valid = true;
 
-    form.querySelectorAll("[required]").forEach(field => {
+//     form.querySelectorAll("[required]").forEach(field => {
 
-        if (field.value.trim() === "") {
+//         if (field.value.trim() === "") {
 
-            field.classList.add(
-                "border-red-500",
-                "focus:border-red-500"
-            );
+//             field.classList.add(
+//                 "border-red-500",
+//                 "focus:border-red-500"
+//             );
 
-            valid = false;
+//             valid = false;
 
-        } else {
+//         } else {
 
-            field.classList.remove(
-                "border-red-500",
-                "focus:border-red-500"
-            );
-        }
+//             field.classList.remove(
+//                 "border-red-500",
+//                 "focus:border-red-500"
+//             );
+//         }
 
-    });
+//     });
 
-    return valid;
-}
+//     return valid;
+// }

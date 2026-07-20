@@ -11,6 +11,7 @@ class ResetPasswordForm(forms.Form):
         label="New Password",
         widget=forms.PasswordInput(
             attrs={
+                "id": "password",
                 "class":"w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-800 dark:text-white",
                 "placeholder": "New Password",
                 "autocomplete": "new-password",
@@ -22,6 +23,7 @@ class ResetPasswordForm(forms.Form):
         label="Confirm Password",
         widget=forms.PasswordInput(
             attrs={
+                "id": "confirmPassword",
                 "class":"w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-800 dark:text-white",
                 "placeholder": "Confirm Password",
                 "autocomplete": "new-password",

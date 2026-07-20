@@ -22,19 +22,29 @@ Used By
 "use strict";
 
 /**
+ * Normalize a value into a trimmed string.
+ *
+ * @param {*} value
+ * @returns {string}
+ */
+function normalize(value) {
+    return String(value ?? "").trim();
+}
+
+/**
  * Check whether a value is empty.
  *
- * @param {string} value
+ * @param {*} value
  * @returns {boolean}
  */
 export function isEmpty(value) {
-    return value.trim() === "";
+    return normalize(value) === "";
 }
 
 /**
  * Validate required field.
  *
- * @param {string} value
+ * @param {*} value
  * @returns {boolean}
  */
 export function validateRequired(value) {
@@ -44,7 +54,7 @@ export function validateRequired(value) {
 /**
  * Validate email address.
  *
- * @param {string} email
+ * @param {*} email
  * @returns {boolean}
  */
 export function validateEmail(email) {
@@ -52,7 +62,7 @@ export function validateEmail(email) {
     const regex =
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    return regex.test(email.trim());
+    return regex.test(normalize(email));
 }
 
 /**
@@ -64,7 +74,7 @@ export function validateEmail(email) {
  * - Numbers
  * - Underscore
  *
- * @param {string} username
+ * @param {*} username
  * @returns {boolean}
  */
 export function validateUsername(username) {
@@ -72,7 +82,7 @@ export function validateUsername(username) {
     const regex =
         /^[a-zA-Z0-9_]{3,30}$/;
 
-    return regex.test(username.trim());
+    return regex.test(normalize(username));
 }
 
 /**
@@ -85,7 +95,7 @@ export function validateUsername(username) {
  * - One number
  * - One special character
  *
- * @param {string} password
+ * @param {*} password
  * @returns {boolean}
  */
 export function validatePassword(password) {
@@ -93,27 +103,29 @@ export function validatePassword(password) {
     const regex =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
 
-    return regex.test(password);
+    return regex.test(String(password ?? ""));
 }
 
 /**
  * Validate password confirmation.
  *
- * @param {string} password
- * @param {string} confirmPassword
+ * @param {*} password
+ * @param {*} confirmPassword
  * @returns {boolean}
  */
 export function validateConfirmPassword(
     password,
     confirmPassword,
 ) {
-    return password === confirmPassword;
+
+    return String(password ?? "") ===
+        String(confirmPassword ?? "");
 }
 
 /**
  * Validate string length.
  *
- * @param {string} value
+ * @param {*} value
  * @param {number} min
  * @param {number} max
  * @returns {boolean}
@@ -124,15 +136,15 @@ export function validateLength(
     max,
 ) {
 
-    const length = value.trim().length;
+    const length = normalize(value).length;
 
     return length >= min && length <= max;
 }
 
 /**
- * Check if file size is valid.
+ * Validate file size.
  *
- * @param {File} file
+ * @param {File|null} file
  * @param {number} maxSizeMB
  * @returns {boolean}
  */
@@ -141,7 +153,7 @@ export function validateFileSize(
     maxSizeMB = 5,
 ) {
 
-    if (!file) {
+    if (!(file instanceof File)) {
         return false;
     }
 
@@ -151,12 +163,12 @@ export function validateFileSize(
 /**
  * Validate image file type.
  *
- * @param {File} file
+ * @param {File|null} file
  * @returns {boolean}
  */
 export function validateImage(file) {
 
-    if (!file) {
+    if (!(file instanceof File)) {
         return false;
     }
 

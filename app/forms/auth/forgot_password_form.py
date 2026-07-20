@@ -13,6 +13,7 @@ class ForgotPasswordForm(forms.Form):
         max_length=User._meta.get_field("email").max_length,
         widget=forms.EmailInput(
             attrs={
+                "id": "email",
                 "class":"w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-primary focus:ring-1 focus:ring-primary dark:border-slate-700 dark:bg-slate-800 dark:text-white",
                 "placeholder": "Enter your email",
                 "label": "Email Address",

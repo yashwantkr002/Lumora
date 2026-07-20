@@ -9,30 +9,30 @@ TAILWIND_INPUT_CLASS = "w-full rounded-xl border border-slate-300 bg-slate-50 px
 class RegisterForm(forms.ModelForm):
     username = forms.CharField(
         required=True,
-        widget=forms.TextInput(attrs={"class": TAILWIND_INPUT_CLASS, "placeholder": "Username"})
+        widget=forms.TextInput(attrs={"class": TAILWIND_INPUT_CLASS, "placeholder": "Username","id": "username","autocomplete": "username",})
     )
     
     email = forms.EmailField(
         required=True,  # Crucial: Forces the user to provide an email
-        widget=forms.EmailInput(attrs={"class": TAILWIND_INPUT_CLASS, "placeholder": "Email Address"})
+        widget=forms.EmailInput(attrs={"class": TAILWIND_INPUT_CLASS, "placeholder": "Email Address","id": "email","autocomplete": "email",})
     )
     
     first_name = forms.CharField(
         required=True,
-        widget=forms.TextInput(attrs={"class": TAILWIND_INPUT_CLASS, "placeholder": "First Name"})
+        widget=forms.TextInput(attrs={"class": TAILWIND_INPUT_CLASS, "placeholder": "First Name","id": "firstName", "autocomplete": "given-name",})
     )
     
     last_name = forms.CharField(
         required=True,
-        widget=forms.TextInput(attrs={"class": TAILWIND_INPUT_CLASS, "placeholder": "Last Name"})
+        widget=forms.TextInput(attrs={"class": TAILWIND_INPUT_CLASS, "placeholder": "Last Name","id": "lastName", "autocomplete": "family-name",})
     )
 
     password = forms.CharField(
-        widget=forms.PasswordInput(attrs={"class": TAILWIND_INPUT_CLASS, "placeholder": "Password"})
+        widget=forms.PasswordInput(attrs={"class": TAILWIND_INPUT_CLASS + " pr-12", "placeholder": "Password","id": "password", "autocomplete": "new-password",})
     )
 
     confirm_password = forms.CharField(
-        widget=forms.PasswordInput(attrs={"class": TAILWIND_INPUT_CLASS, "placeholder": "Confirm Password"})
+        widget=forms.PasswordInput(attrs={"class": TAILWIND_INPUT_CLASS + " pr-12", "placeholder": "Confirm Password","id": "confirmPassword", "autocomplete": "new-password",})
     )
 
     class Meta:

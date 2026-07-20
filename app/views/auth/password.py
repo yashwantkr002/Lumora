@@ -219,7 +219,7 @@ def reset_password(
 
                 PasswordService.reset_password(
                     user=user,
-                    password=form.cleaned_data["password"],
+                    password=form.cleaned_data["new_password"],
                 )
 
                 messages.success(

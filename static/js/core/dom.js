@@ -23,6 +23,15 @@ Used By
 "use strict";
 
 /**
+ * Validation error classes.
+ */
+const ERROR_CLASSES = [
+    "border-red-500",
+    "focus:border-red-500",
+    "focus:ring-red-500",
+];
+
+/**
  * Get element by ID.
  *
  * @param {string} id
@@ -48,16 +57,16 @@ export function query(selector, parent = document) {
  *
  * @param {string} selector
  * @param {ParentNode} parent
- * @returns {NodeListOf<Element>}
+ * @returns {Element[]}
  */
 export function queryAll(selector, parent = document) {
-    return parent.querySelectorAll(selector);
+    return [...parent.querySelectorAll(selector)];
 }
 
 /**
  * Show an element.
  *
- * @param {HTMLElement} element
+ * @param {HTMLElement|null} element
  */
 export function show(element) {
 
@@ -69,7 +78,7 @@ export function show(element) {
 /**
  * Hide an element.
  *
- * @param {HTMLElement} element
+ * @param {HTMLElement|null} element
  */
 export function hide(element) {
 
@@ -79,9 +88,9 @@ export function hide(element) {
 }
 
 /**
- * Toggle visibility.
+ * Toggle element visibility.
  *
- * @param {HTMLElement} element
+ * @param {HTMLElement|null} element
  */
 export function toggle(element) {
 
@@ -93,33 +102,33 @@ export function toggle(element) {
 /**
  * Add CSS class.
  *
- * @param {HTMLElement} element
- * @param {string} className
+ * @param {HTMLElement|null} element
+ * @param {...string} classNames
  */
-export function addClass(element, className) {
+export function addClass(element, ...classNames) {
 
     if (!element) return;
 
-    element.classList.add(className);
+    element.classList.add(...classNames);
 }
 
 /**
  * Remove CSS class.
  *
- * @param {HTMLElement} element
- * @param {string} className
+ * @param {HTMLElement|null} element
+ * @param {...string} classNames
  */
-export function removeClass(element, className) {
+export function removeClass(element, ...classNames) {
 
     if (!element) return;
 
-    element.classList.remove(className);
+    element.classList.remove(...classNames);
 }
 
 /**
  * Toggle CSS class.
  *
- * @param {HTMLElement} element
+ * @param {HTMLElement|null} element
  * @param {string} className
  */
 export function toggleClass(element, className) {
@@ -132,11 +141,13 @@ export function toggleClass(element, className) {
 /**
  * Enable button.
  *
- * @param {HTMLButtonElement} button
+ * @param {HTMLButtonElement|null} button
  */
 export function enableButton(button) {
 
-    if (!button) return;
+    if (!(button instanceof HTMLButtonElement)) {
+        return;
+    }
 
     button.disabled = false;
 }
@@ -144,32 +155,52 @@ export function enableButton(button) {
 /**
  * Disable button.
  *
- * @param {HTMLButtonElement} button
+ * @param {HTMLButtonElement|null} button
  */
 export function disableButton(button) {
 
-    if (!button) return;
+    if (!(button instanceof HTMLButtonElement)) {
+        return;
+    }
 
     button.disabled = true;
 }
 
 /**
- * Display field validation error.
+ * Get validation container.
+ *
+ * Uses `.form-field` wrapper if available.
+ * Falls back to parentElement for backward compatibility.
  *
  * @param {HTMLElement} field
+ * @returns {HTMLElement|null}
+ */
+function getFieldContainer(field) {
+
+    return (
+        field.closest(".form-field") ??
+        field.parentElement
+    );
+}
+
+/**
+ * Display validation error.
+ *
+ * @param {HTMLElement|null} field
  * @param {string} message
  */
 export function showFieldError(field, message) {
 
     if (!field) return;
 
-    field.classList.add(
-        "border-red-500",
-        "focus:border-red-500",
-        "focus:ring-red-500"
-    );
+    const container = getFieldContainer(field);
 
-    let error = field.parentElement.querySelector(".field-error");
+    if (!container) return;
+
+    field.classList.add(...ERROR_CLASSES);
+
+    let error =
+        container.querySelector(".field-error");
 
     if (!error) {
 
@@ -178,56 +209,54 @@ export function showFieldError(field, message) {
         error.className =
             "field-error mt-1 text-sm text-red-500";
 
-        field.parentElement.appendChild(error);
+        container.appendChild(error);
     }
 
     error.textContent = message;
 }
 
 /**
- * Remove field validation error.
+ * Remove validation error.
  *
- * @param {HTMLElement} field
+ * @param {HTMLElement|null} field
  */
 export function clearFieldError(field) {
 
     if (!field) return;
 
-    field.classList.remove(
-        "border-red-500",
-        "focus:border-red-500",
-        "focus:ring-red-500"
-    );
+    const container = getFieldContainer(field);
+
+    field.classList.remove(...ERROR_CLASSES);
+
+    if (!container) return;
 
     const error =
-        field.parentElement.querySelector(".field-error");
+        container.querySelector(".field-error");
 
-    if (error) {
-        error.remove();
-    }
+    error?.remove();
 }
 
 /**
- * Remove all validation errors inside a form.
+ * Remove all validation errors.
  *
- * @param {HTMLFormElement} form
+ * @param {HTMLFormElement|null} form
  */
 export function clearFormErrors(form) {
 
     if (!form) return;
 
-    form.querySelectorAll(".field-error")
+    form
+        .querySelectorAll(".field-error")
         .forEach(error => error.remove());
 
-    form.querySelectorAll(
-        ".border-red-500"
-    ).forEach(field => {
+    form
+        .querySelectorAll("*")
+        .forEach(element => {
 
-        field.classList.remove(
-            "border-red-500",
-            "focus:border-red-500",
-            "focus:ring-red-500"
-        );
+            element.classList.remove(
+                ...ERROR_CLASSES
+            );
 
-    });
+        });
+
 }
