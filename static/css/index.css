@@ -2,3 +2,89 @@
     background-color: black;
     color: aliceblue;
 }
+
+/* Crop Modal Canvas Styling */
+.crop-preview canvas {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    width: auto;
+    height: auto;
+    display: block;
+}
+
+/* Media Preview Styling */
+.media-preview {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    align-items: start;
+}
+
+.preview-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    background: rgba(255, 255, 255, 0.9);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.preview-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+}
+
+.preview-image,
+.preview-video {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+}
+
+.preview-card:hover .preview-image,
+.preview-card:hover .preview-video {
+    transform: scale(1.02);
+}
+
+.preview-remove {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: 9999px;
+    background: rgba(15, 23, 42, 0.8);
+    color: #fff;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.preview-remove:hover {
+    background: rgba(15, 23, 42, 1);
+}
+
+.preview-header {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.preview-empty {
+    padding: 1rem;
+    color: #475569;
+    font-size: 0.95rem;
+    text-align: center;
+    border-radius: 1rem;
+    background: rgba(241, 245, 249, 0.9);
+    border: 1px dashed rgba(148, 163, 184, 0.5);
+}

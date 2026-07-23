@@ -1,5 +1,0 @@
-/**
- * Shared JavaScript utilities.
- */
-
-export {};

@@ -1,71 +1,279 @@
 <form
+    id="post-form"
     method="post"
     enctype="multipart/form-data"
+    novalidate
     class="space-y-6"
 >
+
     {% csrf_token %}
 
-    {% if form.non_field_errors %}
+    <!-- Global Errors -->
+
+    <div
+        id="form-errors"
+        class="{% if not form.non_field_errors %}hidden{% endif %} rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600"
+    >
+        {{ form.non_field_errors }}
+    </div>
+
+    <!-- Caption -->
+
+    <div>
+
+        <label
+            for="{{ form.caption.id_for_label }}"
+            class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-200"
+        >
+            {{ form.caption.label }}
+        </label>
+
+        {{ form.caption }}
 
         <div
-            class="rounded-xl border border-red-200 bg-red-50 p-4 text-red-600"
+            class="mt-2 flex items-center justify-between text-xs text-slate-500"
         >
 
-            {{ form.non_field_errors }}
+            <span>
+
+                {{ form.caption.help_text }}
+
+            </span>
+
+            <span
+                id="caption-counter"
+            >
+                0 / 2200
+            </span>
 
         </div>
 
-    {% endif %}
+        {% if form.caption.errors %}
 
-    {% for field in form %}
+            <p
+                class="mt-2 text-sm text-red-500"
+            >
+                {{ form.caption.errors }}
+            </p>
 
-        <div>
+        {% endif %}
+
+    </div>
+
+    <!-- Media Upload -->
+
+    <div>
+
+        <label
+            for="{{ form.media.id_for_label }}"
+            class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-200"
+        >
+            {{ form.media.label }}
+        </label>
+
+        {{ form.media }}
+
+        {% if form.media.help_text %}
+
+            <p
+                class="mt-2 text-sm text-slate-500"
+            >
+                {{ form.media.help_text }}
+            </p>
+
+        {% endif %}
+
+        {% if form.media.errors %}
+
+            <p
+                class="mt-2 text-sm text-red-500"
+            >
+                {{ form.media.errors }}
+            </p>
+
+        {% endif %}
+
+    </div>
+
+    <!-- Media Preview -->
+
+    <div
+        id="media-preview"
+        class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900"
+    >
+
+    </div>
+
+    <!-- Upload Progress -->
+
+    <div
+        id="upload-progress-wrapper"
+        class="hidden"
+    >
+
+        <div
+            class="mb-2 flex items-center justify-between text-sm"
+        >
+
+            <span>
+
+                Uploading...
+
+            </span>
+
+            <span
+                id="upload-progress-text"
+            >
+                0%
+            </span>
+
+        </div>
+
+        <div
+            class="h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700"
+        >
+
+            <div
+                id="upload-progress-bar"
+                class="h-full w-0 rounded-full bg-primary transition-all duration-300"
+            ></div>
+
+        </div>
+
+    </div>
+
+    <!-- Location -->
+
+    <div>
+
+        <label
+            for="{{ form.location.id_for_label }}"
+            class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-200"
+        >
+            {{ form.location.label }}
+        </label>
+
+        {{ form.location }}
+
+        {% if form.location.errors %}
+
+            <p
+                class="mt-2 text-sm text-red-500"
+            >
+                {{ form.location.errors }}
+            </p>
+
+        {% endif %}
+
+    </div>
+
+    <!-- Visibility -->
+
+    <div>
+
+        <label
+            for="{{ form.visibility.id_for_label }}"
+            class="mb-2 block text-sm font-semibold text-slate-800 dark:text-slate-200"
+        >
+            {{ form.visibility.label }}
+        </label>
+
+        {{ form.visibility }}
+
+        {% if form.visibility.errors %}
+
+            <p
+                class="mt-2 text-sm text-red-500"
+            >
+                {{ form.visibility.errors }}
+            </p>
+
+        {% endif %}
+
+    </div>
+
+    <!-- Settings -->
+
+    <div
+        class="space-y-4 rounded-2xl border border-slate-200 p-4 dark:border-slate-700"
+    >
+
+        <div
+            class="flex items-center gap-3"
+        >
+
+            {{ form.allow_comments }}
 
             <label
-                for="{{ field.id_for_label }}"
-                class="mb-2 block text-sm font-semibold"
+                for="{{ form.allow_comments.id_for_label }}"
+                class="cursor-pointer text-sm font-medium"
             >
 
-                {{ field.label }}
+                {{ form.allow_comments.label }}
 
             </label>
 
-            {{ field }}
+        </div>
 
-            {% if field.help_text %}
+        <div
+            class="flex items-center gap-3"
+        >
 
-                <p
-                    class="mt-1 text-sm text-slate-500"
-                >
+            {{ form.allow_download }}
 
-                    {{ field.help_text }}
+            <label
+                for="{{ form.allow_download.id_for_label }}"
+                class="cursor-pointer text-sm font-medium"
+            >
 
-                </p>
+                {{ form.allow_download.label }}
 
-            {% endif %}
-
-            {% if field.errors %}
-
-                <div
-                    class="mt-2 text-sm text-red-500"
-                >
-
-                    {{ field.errors }}
-
-                </div>
-
-            {% endif %}
+            </label>
 
         </div>
 
-    {% endfor %}
+    </div>
+
+    <!-- Submit -->
 
     <button
+        id="submit-post-btn"
         type="submit"
-        class="rounded-xl bg-primary px-6 py-3 font-medium text-white transition hover:opacity-90"
+        class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-white transition duration-300 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
     >
 
-        {{ submit_label|default:"Save" }}
+        <svg
+            id="submit-spinner"
+            class="hidden h-5 w-5 animate-spin"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+        >
+
+            <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+            ></circle>
+
+            <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            ></path>
+
+        </svg>
+
+        <span
+            id="submit-text"
+        >
+
+            {{ submit_label|default:"Publish" }}
+
+        </span>
 
     </button>
 

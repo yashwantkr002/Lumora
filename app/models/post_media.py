@@ -131,6 +131,14 @@ class PostMedia(
                 name="unique_media_order_per_post",
             ),
 
+            models.CheckConstraint(
+                condition=models.Q(
+                    order__gte=1,
+                    order__lte=10,
+                ),
+                name="post_media_order_range",
+            ),
+
         ]
 
         indexes = [
@@ -157,30 +165,29 @@ class PostMedia(
     def clean(self):
 
         super().clean()
+        if self.media_type == self.MediaType.IMAGE:
 
-        if (
-            self.media_type == self.MediaType.IMAGE
-            and not self.image
-        ):
+            if not self.image:
+                raise ValidationError(
+                    "Image is required."
+                )
 
-            raise ValidationError(
-                "Image is required."
-            )
+            if self.video:
+                raise ValidationError(
+                    "Video must be empty."
+                )
 
-        if (
-            self.media_type == self.MediaType.VIDEO
-            and not self.video
-        ):
+        elif self.media_type == self.MediaType.VIDEO:
 
-            raise ValidationError(
-                "Video is required."
-            )
+            if not self.video:
+                raise ValidationError(
+                    "Video is required."
+                )
 
-        if self.image and self.video:
-
-            raise ValidationError(
-                "Only one media file is allowed."
-            )
+            if self.image:
+                raise ValidationError(
+                    "Image must be empty."
+                )
 
     # -------------------------------------------------------
     # Helpers

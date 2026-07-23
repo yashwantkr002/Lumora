@@ -10,69 +10,152 @@ Handles login page interactions.
 Features
 
 ✓ Client Validation
-✓ Loading Button
 ✓ Password Toggle
+✓ Loading Button
 ✓ Double Submit Prevention
 ✓ Auto Focus
 ✓ Trim Inputs
+✓ Validation UI
+✓ Browser Back Recovery
+✓ Production Ready
 
 ===========================================================
 */
 
 "use strict";
 
+import { togglePassword } from "./auth.js";
+
 import {
-    togglePassword,
-    setLoading,
-    resetLoading,
-    trimInputs,
-    validateRequired,
-} from "./auth.js";
+    getElement,
+    on,
+    ready,
+    clearFormErrors,
+} from "../core/dom.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+import {
+    validateRequiredField,
+} from "../core/validation.js";
 
-    const form = document.getElementById("loginForm");
+import {
+    trim,
+    setButtonLoading,
+    resetButtonLoading,
+} from "../core/utils.js";
 
-    if (!form) return;
+ready(() => {
 
-    const usernameInput = document.getElementById("usernameOrEmail");
+    /* ----------------------------------------------------
+     * Elements
+     * -------------------------------------------------- */
 
-    const passwordInput = document.getElementById("password");
+    const form = getElement("loginForm");
 
-    const submitButton = document.getElementById("loginButton");
+    if (!(form instanceof HTMLFormElement)) {
+        return;
+    }
 
-    const toggleButton = document.getElementById("togglePassword");
+    const usernameInput = getElement("usernameOrEmail");
+    const passwordInput = getElement("password");
+    const submitButton = getElement("loginButton");
+    const toggleButton = getElement("togglePassword");
+    const toggleIcon = getElement("togglePasswordIcon");
 
-    const toggleIcon = document.getElementById("togglePasswordIcon");
+    if (
+        !(usernameInput instanceof HTMLInputElement) ||
+        !(passwordInput instanceof HTMLInputElement) ||
+        !(submitButton instanceof HTMLButtonElement)
+    ) {
+        return;
+    }
 
-    //------------------------------------------------------
-    // Autofocus
-    //------------------------------------------------------
+    /* ----------------------------------------------------
+     * State
+     * -------------------------------------------------- */
 
-    usernameInput?.focus();
+    let isSubmitting = false;
 
-    //------------------------------------------------------
-    // Password Toggle
-    //------------------------------------------------------
+    /* ----------------------------------------------------
+     * Helpers
+     * -------------------------------------------------- */
 
-    toggleButton?.addEventListener("click", () => {
+    function normalizeInputs() {
 
-        togglePassword(
-            passwordInput,
-            toggleIcon
+        usernameInput.value = trim(usernameInput.value);
+
+        passwordInput.value = trim(passwordInput.value);
+
+    }
+
+    function validateForm() {
+
+        clearFormErrors(form);
+
+        normalizeInputs();
+
+        const usernameValid = validateRequiredField(
+            usernameInput,
+            "Username or Email is required.",
         );
 
-    });
+        const passwordValid = validateRequiredField(
+            passwordInput,
+            "Password is required.",
+        );
 
-    //------------------------------------------------------
-    // Submit
-    //------------------------------------------------------
+        return usernameValid && passwordValid;
 
-    form.addEventListener("submit", (event) => {
+    }
 
-        trimInputs(form);
+    function beginSubmit() {
 
-        if (!validateRequired(form)) {
+        isSubmitting = true;
+
+        setButtonLoading(
+            submitButton,
+            "Signing In...",
+        );
+
+    }
+
+    function endSubmit() {
+
+        isSubmitting = false;
+
+        resetButtonLoading(submitButton);
+
+    }
+
+    /* ----------------------------------------------------
+     * Initial Focus
+     * -------------------------------------------------- */
+
+    usernameInput.focus();
+
+    /* ----------------------------------------------------
+     * Password Toggle
+     * -------------------------------------------------- */
+
+    if (toggleButton) {
+
+        on(toggleButton, "click", () => {
+
+            togglePassword(
+                passwordInput,
+                toggleIcon,
+            );
+
+        });
+
+    }
+
+    /* ----------------------------------------------------
+     * Submit
+     * -------------------------------------------------- */
+
+    on(form, "submit", (event) => {
+
+        if (isSubmitting) {
 
             event.preventDefault();
 
@@ -80,20 +163,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-        setLoading(
-            submitButton,
-            "Signing In..."
-        );
+        if (!validateForm()) {
+
+            event.preventDefault();
+
+            return;
+
+        }
+
+        beginSubmit();
+
+        /*
+         * Normal Django form submit.
+         * Do not preventDefault().
+         */
 
     });
 
-    //------------------------------------------------------
-    // Browser Back Button
-    //------------------------------------------------------
+    /* ----------------------------------------------------
+     * Restore State (Back/Forward Cache)
+     * -------------------------------------------------- */
 
-    window.addEventListener("pageshow", () => {
+    on(window, "pageshow", () => {
 
-        resetLoading(submitButton);
+        endSubmit();
 
     });
 

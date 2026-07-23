@@ -7,97 +7,98 @@ PURPOSE
 
 Handles forgot password page interactions.
 
+Features
+
+✓ Auto Focus
+✓ Client Validation
+✓ Trim Inputs
+✓ Loading State
+✓ Double Submit Prevention
+
 ===========================================================
 */
 
 "use strict";
 
-import {
-    trimInputs,
-    setLoading,
-    resetLoading,
-} from "./auth.js";
+import { ready, on, getElement, clearFormErrors } from "../core/dom.js";
 
-import {
-    getElement,
-    showFieldError,
-    clearFormErrors,
-} from "../core/dom.js";
+import { validateEmailField } from "../core/validation.js";
 
-import {
-    validateRequired,
-    validateEmail,
-} from "../core/validation.js";
+import { trim, setButtonLoading, resetButtonLoading } from "../core/utils.js";
 
-document.addEventListener(
-    "DOMContentLoaded",
-    initializeForgotPassword,
-);
+ready(() => {
+  //--------------------------------------------------
+  // Elements
+  //--------------------------------------------------
 
-function initializeForgotPassword() {
+  const form = getElement("forgotPasswordForm");
 
-    const form =
-        getElement("forgotPasswordForm");
+  if (!(form instanceof HTMLFormElement)) {
+    return;
+  }
 
-    if (!form) return;
+  const emailField = getElement("email");
 
-    const email =
-        getElement("email");
+  const submitButton = getElement("forgotPasswordButton");
 
-    const button =
-        getElement("forgotPasswordButton");
+  if (
+    !(emailField instanceof HTMLInputElement) ||
+    !(submitButton instanceof HTMLButtonElement)
+  ) {
+    console.error("Forgot Password page initialization failed.");
 
-    email?.focus();
+    return;
+  }
 
-    form.addEventListener(
-        "submit",
-        event => {
+  let isSubmitting = false;
 
-            clearFormErrors(form);
+  //--------------------------------------------------
+  // Auto Focus
+  //--------------------------------------------------
 
-            trimInputs(form);
+  emailField.focus();
 
-            let valid = true;
+  //--------------------------------------------------
+  // Validation
+  //--------------------------------------------------
 
-            if (!validateRequired(email.value)) {
+  function validateForm() {
+    clearFormErrors(form);
 
-                showFieldError(
-                    email,
-                    "Email is required."
-                );
+    emailField.value = trim(emailField.value);
 
-                valid = false;
+    return validateEmailField(emailField);
+  }
 
-            } else if (!validateEmail(email.value)) {
+  //--------------------------------------------------
+  // Submit
+  //--------------------------------------------------
 
-                showFieldError(
-                    email,
-                    "Enter a valid email address."
-                );
+  on(form, "submit", (event) => {
+    if (isSubmitting) {
+      event.preventDefault();
 
-                valid = false;
+      return;
+    }
 
-            }
+    if (!validateForm()) {
+      event.preventDefault();
 
-            if (!valid) {
+      return;
+    }
 
-                event.preventDefault();
+    isSubmitting = true;
 
-                return;
+    setButtonLoading(submitButton, "Sending...");
+  });
 
-            }
+  //--------------------------------------------------
+  // Browser Back Button
+  //--------------------------------------------------
 
-            setLoading(
-                button,
-                "Sending..."
-            );
+  on(window, "pageshow", () => {
+    isSubmitting = false;
 
-        }
-    );
-
-    window.addEventListener(
-        "pageshow",
-        () => resetLoading(button)
-    );
-
-}
+    resetButtonLoading(submitButton);
+  });
+});

@@ -39,6 +39,7 @@ def edit_profile(request):
             request.POST,
             request.FILES,
             instance=profile,
+            user=request.user,
         )
 
         if form.is_valid():
@@ -56,6 +57,7 @@ def edit_profile(request):
                     profile=profile,
                     cleaned_data=form.cleaned_data,
                     files=request.FILES,
+                    user=request.user,
                 )
 
                 logger.info(

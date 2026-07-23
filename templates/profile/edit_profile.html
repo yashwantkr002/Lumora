@@ -1,221 +1,253 @@
-{% extends "base.html" %}
-
-{% load static %}
-
-{% block title %}
-Edit Profile | Lumora
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% load static %} {% block title %} Edit Profile |
+Lumora {% endblock %} {% block content %}
 
 <div class="mx-auto max-w-4xl">
-
-    <div
-        class="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg dark:border-slate-800 dark:bg-slate-900"
-    >
-
-        <div class="mb-8">
-
-            <h1
-                class="text-3xl font-bold"
-            >
-
-                Edit Profile
-
-            </h1>
-
-            <p
-                class="mt-2 text-slate-500"
-            >
-
-                Update your profile information.
-
-            </p>
-
-        </div>
-
-        <form
-            method="post"
-            enctype="multipart/form-data"
-            class="space-y-8"
-        >
-
-            {% csrf_token %}
-
-            <!-- Cover -->
-
-            <div>
-
-                <label
-                    class="mb-2 block font-semibold"
-                >
-
-                    Cover Photo
-
-                </label>
-
-                {{ form.cover_photo }}
-
-            </div>
-
-            <!-- Avatar -->
-
-            <div>
-
-                <label
-                    class="mb-2 block font-semibold"
-                >
-
-                    Profile Picture
-
-                </label>
-
-                {{ form.avatar }}
-
-            </div>
-
-            <!-- Basic Information -->
-
-            <div
-                class="grid gap-6 md:grid-cols-2"
-            >
-
-                <div>
-
-                    <label
-                        class="mb-2 block font-semibold"
-                    >
-
-                        First Name
-
-                    </label>
-
-                    {{ form.first_name }}
-
-                </div>
-
-                <div>
-
-                    <label
-                        class="mb-2 block font-semibold"
-                    >
-
-                        Last Name
-
-                    </label>
-
-                    {{ form.last_name }}
-
-                </div>
-
-                <div>
-
-                    <label
-                        class="mb-2 block font-semibold"
-                    >
-
-                        Username
-
-                    </label>
-
-                    {{ form.username }}
-
-                </div>
-
-                <div>
-
-                    <label
-                        class="mb-2 block font-semibold"
-                    >
-
-                        Email
-
-                    </label>
-
-                    {{ form.email }}
-
-                </div>
-
-            </div>
-
-            <!-- Bio -->
-
-            <div>
-
-                <label
-                    class="mb-2 block font-semibold"
-                >
-
-                    Bio
-
-                </label>
-
-                {{ form.bio }}
-
-            </div>
-
-            <!-- Website -->
-
-            <div>
-
-                <label
-                    class="mb-2 block font-semibold"
-                >
-
-                    Website
-
-                </label>
-
-                {{ form.website }}
-
-            </div>
-
-            <!-- Location -->
-
-            <div>
-
-                <label
-                    class="mb-2 block font-semibold"
-                >
-
-                    Location
-
-                </label>
-
-                {{ form.location }}
-
-            </div>
-
-            <!-- Buttons -->
-
-            <div
-                class="flex justify-end gap-4"
-            >
-
-                <a
-                    href="{% url 'profile' request.user.username %}"
-                    class="rounded-xl border border-slate-300 px-6 py-3 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
-                >
-
-                    Cancel
-
-                </a>
-
-                <button
-                    type="submit"
-                    class="rounded-xl bg-primary px-6 py-3 font-semibold text-white hover:opacity-90"
-                >
-
-                    Save Changes
-
-                </button>
-
-            </div>
-
-        </form>
-
+  <div
+    class="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg dark:border-slate-800 dark:bg-slate-900"
+  >
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold">Edit Profile</h1>
+
+      <p class="mt-2 text-slate-500">Update your profile information.</p>
     </div>
 
-</div>
+    <form
+      id="editProfileForm"
+      method="post"
+      enctype="multipart/form-data"
+      novalidate
+      class="space-y-8"
+    >
+      {% csrf_token %}
 
+      <!-- Cover -->
+
+      <div class="form-field">
+        <label class="mb-2 block font-semibold"> Cover Image </label>
+
+        {{ form.cover_image }}
+
+        <div id="coverPreview"></div>
+      </div>
+
+      <!-- Avatar -->
+
+      <div class="form-field">
+        <label class="mb-2 block font-semibold"> Profile Picture </label>
+
+        {{ form.avatar }}
+        <div id="avatarPreview"></div>
+      </div>
+
+      <!-- Basic Information -->
+
+      <div class="grid gap-6 md:grid-cols-2">
+        <div class="form-field">
+          <label class="mb-2 block font-semibold"> First Name </label>
+
+          {{ form.first_name }}
+        </div>
+
+        <div class="form-field">
+          <label class="mb-2 block font-semibold"> Last Name </label>
+
+          {{ form.last_name }}
+        </div>
+
+        <div class="form-field">
+          <label class="mb-2 block font-semibold"> Username </label>
+
+          {{ form.username }}
+        </div>
+
+        <div class="form-field">
+          <label class="mb-2 block font-semibold"> Email </label>
+
+          {{ form.email }}
+        </div>
+      </div>
+
+      <!-- Bio -->
+
+      <div class="form-field">
+        <label class="mb-2 block font-semibold"> Bio </label>
+
+        {{ form.bio }}
+        <p id="bioCounter" class="mt-2 text-right text-sm text-slate-500">
+          0 / 150
+        </p>
+      </div>
+
+      <!-- Website -->
+
+      <div class="form-field">
+        <label class="mb-2 block font-semibold"> Website </label>
+
+        {{ form.website }}
+      </div>
+
+      <!-- Location -->
+
+      <div class="form-field">
+        <label class="mb-2 block font-semibold"> Location </label>
+
+        {{ form.location }}
+      </div>
+
+      <!-- Buttons -->
+
+      <div class="flex justify-end gap-4">
+        <a
+          href="{% url 'profile' request.user.username %}"
+          class="rounded-xl border border-slate-300 px-6 py-3 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+        >
+          Cancel
+        </a>
+
+        <button
+          id="saveProfileButton"
+          type="submit"
+          class="rounded-xl bg-primary px-6 py-3 font-semibold text-white transition hover:opacity-90"
+        >
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% block extra_js %}
+<div
+  id="crop-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/70 p-4"
+  aria-hidden="true"
+>
+  <div class="w-full max-w-4xl overflow-hidden rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900">
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Crop Image</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Adjust your image and save when ready.</p>
+      </div>
+    </div>
+
+    <div class="crop-preview mb-6 flex items-center justify-center h-[360px] overflow-auto rounded-3xl bg-slate-100 dark:bg-slate-800"></div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Zoom</label>
+        <input
+          type="range"
+          min="0.5"
+          max="3"
+          step="0.01"
+          value="1"
+          class="crop-zoom h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200"
+        />
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Brightness</label>
+        <input
+          type="range"
+          min="0"
+          max="200"
+          step="1"
+          value="100"
+          class="crop-brightness h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200"
+        />
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Contrast</label>
+        <input
+          type="range"
+          min="0"
+          max="200"
+          step="1"
+          value="100"
+          class="crop-contrast h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200"
+        />
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Saturation</label>
+        <input
+          type="range"
+          min="0"
+          max="200"
+          step="1"
+          value="100"
+          class="crop-saturation h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200"
+        />
+      </div>
+    </div>
+
+    <div class="mt-6 flex flex-wrap gap-3">
+      <button
+        type="button"
+        class="crop-rotate-left rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+      >
+        Rotate Left
+      </button>
+
+      <button
+        type="button"
+        class="crop-rotate-right rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+      >
+        Rotate Right
+      </button>
+
+      <button
+        type="button"
+        class="crop-flip-horizontal rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+      >
+        Flip Horizontal
+      </button>
+
+      <button
+        type="button"
+        class="crop-flip-vertical rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+      >
+        Flip Vertical
+      </button>
+
+      <button
+        type="button"
+        class="crop-reset rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+      >
+        Reset
+      </button>
+    </div>
+
+    <div class="mt-6 flex flex-wrap justify-end gap-3">
+      <button
+        type="button"
+        class="crop-cancel rounded-xl border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="crop-save rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+      >
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+<script
+    type="module"
+    src="{% static 'js/profile/edit-profile.js' %}">
+</script>
+
+<script
+    type="module"
+    src="{% static 'js/profile/avatar.js' %}">
+</script>
+
+<script
+    type="module"
+    src="{% static 'js/profile/cover.js' %}">
+</script>
+{% endblock %}
 {% endblock %}

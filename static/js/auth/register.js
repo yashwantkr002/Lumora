@@ -12,58 +12,63 @@ Features
 ✓ Auto Focus
 ✓ Password Toggle
 ✓ Confirm Password Toggle
-✓ Trim Inputs
-
-Remaining Features
-
-- Password Strength
-- Password Match
-- Validation
-- Loading State
-- Double Submit Prevention
+✓ Password Strength
+✓ Password Match
+✓ Client Validation
+✓ Loading State
+✓ Double Submit Prevention
 
 ===========================================================
 */
 
 "use strict";
 
-import {
-  togglePassword,
-  trimInputs,
-  setLoading,
-  resetLoading,
-} from "./auth.js";
+import { togglePassword, getPasswordStrength, passwordsMatch } from "./auth.js";
 
 import {
   getElement,
   show,
   hide,
-  showFieldError,
+  on,
+  ready,
+  setText,
   clearFormErrors,
 } from "../core/dom.js";
 
 import {
-  validateRequired,
-  validatePassword,
-  validateConfirmPassword,
+  validateRequiredField,
+  validateEmailField,
+  validateUsernameField,
+  validatePasswordField,
+  validateConfirmPasswordField,
 } from "../core/validation.js";
-document.addEventListener("DOMContentLoaded", initializeRegister);
 
-/**
- * Initialize register page.
- */
-function initializeRegister() {
+import { trim, setButtonLoading, resetButtonLoading } from "../core/utils.js";
+
+ready(() => {
   const form = getElement("registerForm");
 
-  if (!form) {
+  if (!(form instanceof HTMLFormElement)) {
     return;
   }
 
+  //--------------------------------------------------
+  // Fields
+  //--------------------------------------------------
+
   const firstNameField = getElement("firstName");
+  const lastNameField = getElement("lastName");
+  const usernameField = getElement("username");
+  const emailField = getElement("email");
 
   const passwordField = getElement("password");
-
   const confirmPasswordField = getElement("confirmPassword");
+
+  const registerButton = getElement("registerButton");
+
+  //--------------------------------------------------
+  // Password UI
+  //--------------------------------------------------
 
   const togglePasswordButton = getElement("togglePassword");
 
@@ -77,206 +82,214 @@ function initializeRegister() {
 
   const passwordMatchMessage = getElement("passwordMatchMessage");
 
-  const registerButton = getElement("registerButton");
+  //--------------------------------------------------
+  // Safety Check
+  //--------------------------------------------------
 
-  //----------------------------------------------------
+  if (
+    !(firstNameField instanceof HTMLInputElement) ||
+    !(lastNameField instanceof HTMLInputElement) ||
+    !(usernameField instanceof HTMLInputElement) ||
+    !(emailField instanceof HTMLInputElement) ||
+    !(passwordField instanceof HTMLInputElement) ||
+    !(confirmPasswordField instanceof HTMLInputElement) ||
+    !(registerButton instanceof HTMLButtonElement)
+  ) {
+    console.error("Register page initialization failed.");
+
+    return;
+  }
+
+  let isSubmitting = false;
+
+  //--------------------------------------------------
   // Auto Focus
-  //----------------------------------------------------
+  //--------------------------------------------------
 
-  firstNameField?.focus();
+  firstNameField.focus();
 
-  //----------------------------------------------------
-  // Trim Inputs
-  //----------------------------------------------------
-
-
-  //----------------------------------------------------
+  //--------------------------------------------------
   // Password Toggle
-  //----------------------------------------------------
+  //--------------------------------------------------
 
-  togglePasswordButton?.addEventListener("click", () => {
-    togglePassword(passwordField, togglePasswordButton);
-  });
+  if (togglePasswordButton) {
+    on(togglePasswordButton, "click", () => {
+      togglePassword(passwordField, togglePasswordButton);
+    });
+  }
 
-  //----------------------------------------------------
+  //--------------------------------------------------
   // Confirm Password Toggle
-  //----------------------------------------------------
+  //--------------------------------------------------
 
-  toggleConfirmPasswordButton?.addEventListener("click", () => {
-    togglePassword(confirmPasswordField, toggleConfirmPasswordButton);
+  if (toggleConfirmPasswordButton) {
+    on(toggleConfirmPasswordButton, "click", () => {
+      togglePassword(confirmPasswordField, toggleConfirmPasswordButton);
+    });
+  }
+
+  //--------------------------------------------------
+  // Live Password Strength
+  //--------------------------------------------------
+
+  on(passwordField, "input", () => {
+    const password = trim(passwordField.value);
+
+    if (!password) {
+      hide(strengthContainer);
+
+      return;
+    }
+
+    show(strengthContainer);
+
+    const strength = getPasswordStrength(password);
+
+    strengthBar.className = `h-full rounded-full transition-all duration-300 ${strength.color}`;
+
+    switch (strength.score) {
+      case 0:
+      case 1:
+        strengthBar.style.width = "20%";
+        break;
+
+      case 2:
+        strengthBar.style.width = "40%";
+        break;
+
+      case 3:
+        strengthBar.style.width = "60%";
+        break;
+
+      case 4:
+        strengthBar.style.width = "80%";
+        break;
+
+      default:
+        strengthBar.style.width = "100%";
+    }
+
+    setText(strengthText, strength.label);
   });
 
-  //----------------------------------------------------
-  // Submit
-  //----------------------------------------------------
+  //--------------------------------------------------
+  // Live Password Match
+  //--------------------------------------------------
 
-  form.addEventListener("submit", (event) => {
+  function updatePasswordMatch() {
+    if (!confirmPasswordField.value) {
+      setText(passwordMatchMessage, "");
+
+      return;
+    }
+
+    const matched = passwordsMatch(
+      passwordField.value,
+
+      confirmPasswordField.value,
+    );
+
+    if (matched) {
+      passwordMatchMessage.className = "mt-2 text-sm text-green-600";
+
+      setText(
+        passwordMatchMessage,
+
+        "✓ Passwords match",
+      );
+    } else {
+      passwordMatchMessage.className = "mt-2 text-sm text-red-500";
+
+      setText(
+        passwordMatchMessage,
+
+        "✗ Passwords do not match",
+      );
+    }
+  }
+
+  on(passwordField, "input", updatePasswordMatch);
+
+  on(confirmPasswordField, "input", updatePasswordMatch);
+
+  // -------------------------------------------------
+  // PART 2 STARTS HERE
+  // (Validation + Submit + Loading + PageShow)
+  // -------------------------------------------------
+  /* --------------------------------------------------
+   * Validation
+   * -------------------------------------------------- */
+
+  function validateForm() {
     clearFormErrors(form);
 
-    trimInputs(form);
+    firstNameField.value = trim(firstNameField.value);
+    lastNameField.value = trim(lastNameField.value);
+    usernameField.value = trim(usernameField.value);
+    emailField.value = trim(emailField.value);
+    passwordField.value = trim(passwordField.value);
+    confirmPasswordField.value = trim(confirmPasswordField.value);
 
-    let valid = true;
+    const firstNameValid = validateRequiredField(
+      firstNameField,
+      "First name is required.",
+    );
 
-    const firstName = getElement("firstName");
-    const lastName = getElement("lastName");
-    const username = getElement("username");
-    const email = getElement("email");
+    const lastNameValid = validateRequiredField(
+      lastNameField,
+      "Last name is required.",
+    );
 
-    if (!validateRequired(firstName.value)) {
-      showFieldError(firstName, "First name is required.");
-      valid = false;
-    }
+    const usernameValid = validateUsernameField(usernameField);
 
-    if (!validateRequired(lastName.value)) {
-      showFieldError(lastName, "Last name is required.");
-      valid = false;
-    }
+    const emailValid = validateEmailField(emailField);
 
-    if (!validateRequired(username.value)) {
-      showFieldError(username, "Username is required.");
-      valid = false;
-    }
+    const passwordValid = validatePasswordField(passwordField);
 
-    if (!validateRequired(email.value)) {
-      showFieldError(email, "Email is required.");
-      valid = false;
-    }
+    const confirmPasswordValid = validateConfirmPasswordField(
+      passwordField,
+      confirmPasswordField,
+    );
 
-    if (!validatePassword(passwordField.value)) {
-      showFieldError(passwordField, "Password does not meet the requirements.");
+    return (
+      firstNameValid &&
+      lastNameValid &&
+      usernameValid &&
+      emailValid &&
+      passwordValid &&
+      confirmPasswordValid
+    );
+  }
 
-      valid = false;
-    }
+  /* --------------------------------------------------
+   * Submit
+   * -------------------------------------------------- */
 
-    if (
-      !validateConfirmPassword(passwordField.value, confirmPasswordField.value)
-    ) {
-      showFieldError(confirmPasswordField, "Passwords do not match.");
-
-      valid = false;
-    }
-
-    if (!valid) {
+  on(form, "submit", (event) => {
+    if (isSubmitting) {
       event.preventDefault();
 
       return;
     }
 
-    //------------------------------------------------
-    // Loading State
-    //------------------------------------------------
-
-    setLoading(registerButton, "Creating Account...");
-  });
-
-  initializePasswordStrength(
-    passwordField,
-    strengthContainer,
-    strengthBar,
-    strengthText,
-  );
-
-  initializePasswordMatch(
-    passwordField,
-    confirmPasswordField,
-    passwordMatchMessage,
-  );
-
-  window.addEventListener("pageshow", () => {
-    resetLoading(registerButton);
-  });
-}
-
-/**
- * Live password strength.
- */
-function initializePasswordStrength(passwordField, container, bar, text) {
-  if (!passwordField) return;
-
-  passwordField.addEventListener("input", () => {
-    const password = passwordField.value;
-
-    if (!password) {
-      hide(container);
+    if (!validateForm()) {
+      event.preventDefault();
 
       return;
     }
 
-    show(container);
+    isSubmitting = true;
 
-    let score = 0;
-
-    if (password.length >= 8) score++;
-
-    if (/[a-z]/.test(password)) score++;
-
-    if (/[A-Z]/.test(password)) score++;
-
-    if (/\d/.test(password)) score++;
-
-    if (/[^A-Za-z0-9]/.test(password)) score++;
-
-    updateStrengthUI(score, bar, text);
+    setButtonLoading(registerButton, "Creating Account...");
   });
-}
 
-/**
- * Update strength meter.
- */
-function updateStrengthUI(score, bar, text) {
-  bar.className = "h-full rounded-full transition-all duration-300";
+  /* --------------------------------------------------
+   * Reset Loading (Browser Back)
+   * -------------------------------------------------- */
 
-  if (score <= 2) {
-    bar.classList.add("w-1/3", "bg-red-500");
+  on(window, "pageshow", () => {
+    isSubmitting = false;
 
-    text.textContent = "Weak Password";
-
-    return;
-  }
-
-  if (score <= 4) {
-    bar.classList.add("w-2/3", "bg-yellow-500");
-
-    text.textContent = "Medium Password";
-
-    return;
-  }
-
-  bar.classList.add("w-full", "bg-green-500");
-
-  text.textContent = "Strong Password";
-}
-
-/**
- * Live password matching.
- */
-function initializePasswordMatch(passwordField, confirmPasswordField, message) {
-  if (!confirmPasswordField) return;
-
-  function update() {
-    if (!confirmPasswordField.value) {
-      message.textContent = "";
-
-      return;
-    }
-
-    const match = validateConfirmPassword(
-      passwordField.value,
-      confirmPasswordField.value,
-    );
-
-    if (match) {
-      message.textContent = "✓ Passwords match";
-
-      message.className = "mt-2 text-sm text-green-600";
-    } else {
-      message.textContent = "✗ Passwords do not match";
-
-      message.className = "mt-2 text-sm text-red-500";
-    }
-  }
-
-  passwordField.addEventListener("input", update);
-
-  confirmPasswordField.addEventListener("input", update);
-}
+    resetButtonLoading(registerButton);
+  });
+});

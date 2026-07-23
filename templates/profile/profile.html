@@ -7,7 +7,7 @@
 
 {% block content %}
 
-<div class="mx-auto max-w-6xl space-y-8">
+<div id="profilePage" class="mx-auto max-w-6xl space-y-8">
 
     <!-- ===================================================== -->
     <!-- FIX #1 -->
@@ -240,6 +240,7 @@
                             {% csrf_token %}
 
                             <button
+                                id="unfollowButton"
                                 type="submit"
                                 class="rounded-xl bg-red-500 px-6 py-3 font-medium text-white transition hover:bg-red-600"
                             >
@@ -260,6 +261,7 @@
                             {% csrf_token %}
 
                             <button
+                                id="followButton"
                                 type="submit"
                                 class="rounded-xl bg-primary px-6 py-3 font-medium text-white transition hover:opacity-90"
                             >
@@ -281,6 +283,22 @@
                     </button>
 
                 {% endif %}
+
+                <button
+                    id="copyProfileLink"
+                    type="button"
+                    class="rounded-xl border border-slate-300 px-6 py-3 font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                >
+                    Copy Profile
+                </button>
+
+                <button
+                    id="shareProfile"
+                    type="button"
+                    class="rounded-xl border border-slate-300 px-6 py-3 font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                >
+                    Share
+                </button>
 
             </div>
 
@@ -317,6 +335,7 @@
             </div>
 
             <a
+                id="followersLink"
                 href="{% url 'followers' profile_user.username %}"
                 class="text-center transition hover:text-primary"
             >
@@ -336,6 +355,7 @@
             </a>
 
             <a
+                id="followingLink"
                 href="{% url 'following' profile_user.username %}"
                 class="text-center transition hover:text-primary"
             >
@@ -362,7 +382,7 @@
     <!-- User Posts -->
     <!-- ===================================================== -->
 
-    <section class="space-y-6">
+    <section id="profilePosts" class="space-y-6">
 
         <div
             class="flex items-center justify-between"

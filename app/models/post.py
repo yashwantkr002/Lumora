@@ -167,6 +167,44 @@ class Post(
                 ]
             ),
 
+
+        ]
+        constraints = [
+
+            models.CheckConstraint(
+                condition=models.Q(
+                    likes_count__gte=0,
+                ),
+                name="post_likes_count_positive",
+            ),
+
+            models.CheckConstraint(
+                condition=models.Q(
+                    comments_count__gte=0,
+                ),
+                name="post_comments_count_positive",
+            ),
+
+            models.CheckConstraint(
+                condition=models.Q(
+                    shares_count__gte=0,
+                ),
+                name="post_shares_count_positive",
+            ),
+
+            models.CheckConstraint(
+                condition=models.Q(
+                    saves_count__gte=0,
+                ),
+                name="post_saves_count_positive",
+            ),
+
+            models.CheckConstraint(
+                condition=models.Q(
+                    views_count__gte=0,
+                ),
+                name="post_views_count_positive",
+            ),
         ]
 
     # -------------------------------------------------------

@@ -66,8 +66,12 @@ class ProfileService:
         profile,
         cleaned_data,
         files,
+        user,
     ):
-
+        user.first_name = cleaned_data["first_name"]
+        user.last_name = cleaned_data["last_name"]
+        user.username = cleaned_data["username"]
+        user.email = cleaned_data["email"]
         profile.bio = cleaned_data.get(
             "bio",
             profile.bio,
@@ -104,6 +108,14 @@ class ProfileService:
                 "profession",
                 "avatar",
                 "cover_image",
+            ],
+        )
+        user.save(
+            update_fields=[
+                "first_name",
+                "last_name",
+                "username",
+                "email",
             ],
         )
 

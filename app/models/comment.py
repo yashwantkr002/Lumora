@@ -132,6 +132,18 @@ class Comment(
                 ),
                 name="prevent_self_parent",
             ),
+            models.CheckConstraint(
+                condition=models.Q(
+                    likes_count__gte=0,
+                ),
+                name="comment_likes_count_positive",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(
+                    replies_count__gte=0,
+                ),
+                name="comment_replies_count_positive",
+            ),
 
         ]
 

@@ -1,128 +1,148 @@
-/*
+﻿/*
 ===========================================================
 File: static/js/auth/auth.js
 ===========================================================
 
 PURPOSE
 
-Reusable utilities for authentication pages.
+Authentication utility functions for Lumora.
 
-Used By
+Utilities
 
-- login.js
-- register.js
-- forgot-password.js
-- reset-password.js
-- change-password.js
+- togglePassword: Toggle password field visibility
+- getPasswordStrength: Evaluate password strength
+- passwordsMatch: Compare two password values
 
 ===========================================================
 */
 
 "use strict";
 
+/* --------------------------------------------------------
+ * Password Visibility
+ * ------------------------------------------------------ */
+
 /**
  * Toggle password visibility.
  *
- * @param {HTMLInputElement} input
- * @param {HTMLElement|null} icon
+ * Updates both the input type and icon visibility.
+ *
+ * @param {HTMLInputElement} passwordInput
+ * @param {HTMLElement} toggleButton
  */
-export function togglePassword(input, icon = null) {
-    console.log("password toggle function called");
-    if (!input) return;
+export function togglePassword(passwordInput, toggleButton) {
+  if (!passwordInput || !toggleButton) {
+    return;
+  }
 
-    const isPassword = input.type === "password";
+  const isPassword = passwordInput.type === "password";
 
-    input.type = isPassword ? "text" : "password";
+  // Toggle input type
+  passwordInput.type = isPassword ? "text" : "password";
 
-    if (icon) {
-        icon.classList.toggle("fa-eye");
-        icon.classList.toggle("fa-eye-slash");
-    }
+  // Toggle icon classes
+  const icon = toggleButton.querySelector("i") || toggleButton;
+
+  if (isPassword) {
+    // Show eye-slash icon (password visible)
+    icon.classList.remove("fa-eye");
+    icon.classList.add("fa-eye-slash");
+  } else {
+    // Show eye icon (password hidden)
+    icon.classList.remove("fa-eye-slash");
+    icon.classList.add("fa-eye");
+  }
 }
 
+/* --------------------------------------------------------
+ * Password Strength Evaluation
+ * ------------------------------------------------------ */
+
 /**
- * Disable submit button and show loading text.
+ * Evaluate password strength.
  *
- * @param {HTMLButtonElement} button
- * @param {string} loadingText
+ * Returns an object with:
+ * - score: 0-5 (strength level)
+ * - label: User-friendly strength label
+ * - color: Tailwind color class for the strength bar
+ *
+ * @param {string} password
+ * @returns {{score: number, label: string, color: string}}
  */
-export function setLoading(button, loadingText = "Please wait...") {
+export function getPasswordStrength(password) {
+  if (!password) {
+    return {
+      score: 0,
+      label: "No password",
+      color: "bg-gray-300",
+    };
+  }
 
-    if (!button) return;
+  let score = 0;
 
-    button.disabled = true;
+  // Length checks
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
 
-    button.dataset.originalText = button.innerHTML;
+  // Character type checks
+  if (/[a-z]/.test(password)) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^a-zA-Z0-9]/.test(password)) score++;
 
-    button.innerHTML = `
-        <span class="inline-flex items-center gap-2">
-            <span class="animate-spin">⏳</span>
-            ${loadingText}
-        </span>
-    `;
+  // Normalize score to 0-5
+  score = Math.min(5, Math.ceil(score / 1.2));
+
+  let label = "Weak";
+  let color = "bg-red-500";
+
+  switch (score) {
+    case 0:
+    case 1:
+      label = "Weak";
+      color = "bg-red-500";
+      break;
+
+    case 2:
+      label = "Fair";
+      color = "bg-orange-500";
+      break;
+
+    case 3:
+      label = "Good";
+      color = "bg-yellow-500";
+      break;
+
+    case 4:
+      label = "Strong";
+      color = "bg-blue-500";
+      break;
+
+    case 5:
+      label = "Very Strong";
+      color = "bg-green-500";
+      break;
+  }
+
+  return { score, label, color };
 }
 
-/**
- * Restore button.
- *
- * @param {HTMLButtonElement} button
- */
-export function resetLoading(button) {
-
-    if (!button) return;
-
-    button.disabled = false;
-
-    if (button.dataset.originalText) {
-        button.innerHTML = button.dataset.originalText;
-    }
-}
+/* --------------------------------------------------------
+ * Password Matching
+ * ------------------------------------------------------ */
 
 /**
- * Trim all text inputs inside a form.
+ * Check if two passwords match.
  *
- * @param {HTMLFormElement} form
- */
-export function trimInputs(form) {
-
-    if (!form) return;
-
-    form.querySelectorAll("input[type='text'], input[type='email']")
-        .forEach(input => {
-            input.value = input.value.trim();
-        });
-}
-
-/**
- * Check required fields.
- *
- * @param {HTMLFormElement} form
+ * @param {string} password1
+ * @param {string} password2
  * @returns {boolean}
  */
-// export function validateRequired(form) {
-
-//     let valid = true;
-
-//     form.querySelectorAll("[required]").forEach(field => {
-
-//         if (field.value.trim() === "") {
-
-//             field.classList.add(
-//                 "border-red-500",
-//                 "focus:border-red-500"
-//             );
-
-//             valid = false;
-
-//         } else {
-
-//             field.classList.remove(
-//                 "border-red-500",
-//                 "focus:border-red-500"
-//             );
-//         }
-
-//     });
-
-//     return valid;
-// }
+export function passwordsMatch(password1, password2) {
+  return (
+    password1 &&
+    password2 &&
+    password1.trim() === password2.trim() &&
+    password1.length > 0
+  );
+}

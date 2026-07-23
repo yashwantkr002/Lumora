@@ -15,7 +15,6 @@ Features
 ✓ Password Strength Meter
 ✓ Live Password Match
 ✓ Client Validation
-✓ Trim Inputs
 ✓ Loading Button
 ✓ Double Submit Prevention
 ✓ Browser Back Restore
@@ -25,340 +24,225 @@ Features
 
 "use strict";
 
-import {
-    togglePassword,
-    trimInputs,
-    setLoading,
-    resetLoading,
-} from "./auth.js";
+import { togglePassword, getPasswordStrength, passwordsMatch } from "./auth.js";
 
 import {
-    getElement,
-    show,
-    hide,
-    showFieldError,
-    clearFormErrors,
+  ready,
+  on,
+  getElement,
+  show,
+  hide,
+  setText,
+  clearFormErrors,
 } from "../core/dom.js";
 
 import {
-    validatePassword,
-    validateConfirmPassword,
+  validatePasswordField,
+  validateConfirmPasswordField,
 } from "../core/validation.js";
 
-document.addEventListener(
-    "DOMContentLoaded",
-    initializeResetPassword,
-);
+import { trim, setButtonLoading, resetButtonLoading } from "../core/utils.js";
 
-/**
- * Initialize reset password page.
- */
-function initializeResetPassword() {
+ready(() => {
+  //--------------------------------------------------
+  // Elements
+  //--------------------------------------------------
 
-    const form = getElement("resetPasswordForm");
+  const form = getElement("resetPasswordForm");
 
-    if (!form) return;
+  if (!(form instanceof HTMLFormElement)) {
+    return;
+  }
 
-    const passwordField = getElement("password");
+  const passwordField = getElement("password");
 
-    const confirmPasswordField = getElement("confirmPassword");
+  const confirmPasswordField = getElement("confirmPassword");
 
-    const togglePasswordButton = getElement("togglePassword");
+  const resetButton = getElement("resetPasswordButton");
 
-    const toggleConfirmPasswordButton =
-        getElement("toggleConfirmPassword");
+  const togglePasswordButton = getElement("togglePassword");
 
-    const strengthContainer =
-        getElement("passwordStrength");
+  const toggleConfirmPasswordButton = getElement("toggleConfirmPassword");
 
-    const strengthBar =
-        getElement("strengthBar");
+  const strengthContainer = getElement("passwordStrength");
 
-    const strengthText =
-        getElement("strengthText");
+  const strengthBar = getElement("strengthBar");
 
-    const passwordMatchMessage =
-        getElement("passwordMatchMessage");
+  const strengthText = getElement("strengthText");
 
-    const resetButton =
-        getElement("resetPasswordButton");
+  const passwordMatchMessage = getElement("passwordMatchMessage");
 
-    //----------------------------------------------------
-    // Auto Focus
-    //----------------------------------------------------
+  //--------------------------------------------------
+  // Safety Check
+  //--------------------------------------------------
 
-    passwordField?.focus();
+  if (
+    !(passwordField instanceof HTMLInputElement) ||
+    !(confirmPasswordField instanceof HTMLInputElement) ||
+    !(resetButton instanceof HTMLButtonElement)
+  ) {
+    console.error("Reset Password page initialization failed.");
 
-    //----------------------------------------------------
-    // Password Toggle
-    //----------------------------------------------------
+    return;
+  }
 
-    togglePasswordButton?.addEventListener(
-        "click",
-        () => togglePassword(
-            passwordField,
-            togglePasswordButton,
-        ),
-    );
+  let isSubmitting = false;
 
-    //----------------------------------------------------
-    // Confirm Password Toggle
-    //----------------------------------------------------
+  //--------------------------------------------------
+  // Auto Focus
+  //--------------------------------------------------
 
-    toggleConfirmPasswordButton?.addEventListener(
-        "click",
-        () => togglePassword(
-            confirmPasswordField,
-            toggleConfirmPasswordButton,
-        ),
-    );
+  passwordField.focus();
 
-    //----------------------------------------------------
-    // Submit
-    //----------------------------------------------------
+  //--------------------------------------------------
+  // Password Toggle
+  //--------------------------------------------------
 
-    form.addEventListener(
-        "submit",
-        event => {
+  if (togglePasswordButton) {
+    on(togglePasswordButton, "click", () => {
+      togglePassword(passwordField, togglePasswordButton);
+    });
+  }
 
-            clearFormErrors(form);
+  //--------------------------------------------------
+  // Confirm Password Toggle
+  //--------------------------------------------------
 
-            trimInputs(form);
+  if (toggleConfirmPasswordButton) {
+    on(toggleConfirmPasswordButton, "click", () => {
+      togglePassword(confirmPasswordField, toggleConfirmPasswordButton);
+    });
+  }
 
-            let valid = true;
+  //--------------------------------------------------
+  // Live Password Strength
+  //--------------------------------------------------
 
-            if (!validatePassword(passwordField.value)) {
+  on(passwordField, "input", () => {
+    const password = trim(passwordField.value);
 
-                showFieldError(
-                    passwordField,
-                    "Password does not meet the requirements.",
-                );
+    if (!password) {
+      hide(strengthContainer);
 
-                valid = false;
-
-            }
-
-            if (
-                !validateConfirmPassword(
-                    passwordField.value,
-                    confirmPasswordField.value,
-                )
-            ) {
-
-                showFieldError(
-                    confirmPasswordField,
-                    "Passwords do not match.",
-                );
-
-                valid = false;
-
-            }
-
-            if (!valid) {
-
-                event.preventDefault();
-
-                return;
-
-            }
-
-            setLoading(
-                resetButton,
-                "Resetting Password...",
-            );
-
-        },
-    );
-
-    //----------------------------------------------------
-    // Password Strength
-    //----------------------------------------------------
-
-    initializePasswordStrength(
-        passwordField,
-        strengthContainer,
-        strengthBar,
-        strengthText,
-    );
-
-    //----------------------------------------------------
-    // Password Match
-    //----------------------------------------------------
-
-    initializePasswordMatch(
-        passwordField,
-        confirmPasswordField,
-        passwordMatchMessage,
-    );
-
-    //----------------------------------------------------
-    // Browser Back Restore
-    //----------------------------------------------------
-
-    window.addEventListener(
-        "pageshow",
-        () => resetLoading(resetButton),
-    );
-
-}
-
-/**
- * Live password strength.
- */
-function initializePasswordStrength(
-    passwordField,
-    container,
-    bar,
-    text,
-) {
-
-    if (!passwordField) return;
-
-    passwordField.addEventListener(
-        "input",
-        () => {
-
-            const password =
-                passwordField.value;
-
-            if (!password) {
-
-                hide(container);
-
-                return;
-
-            }
-
-            show(container);
-
-            let score = 0;
-
-            if (password.length >= 8) score++;
-
-            if (/[a-z]/.test(password)) score++;
-
-            if (/[A-Z]/.test(password)) score++;
-
-            if (/\d/.test(password)) score++;
-
-            if (/[^A-Za-z0-9]/.test(password)) score++;
-
-            updateStrengthUI(
-                score,
-                bar,
-                text,
-            );
-
-        },
-    );
-
-}
-
-/**
- * Update strength meter.
- */
-function updateStrengthUI(
-    score,
-    bar,
-    text,
-) {
-
-    bar.className =
-        "h-full rounded-full transition-all duration-300";
-
-    if (score <= 2) {
-
-        bar.classList.add(
-            "w-1/3",
-            "bg-red-500",
-        );
-
-        text.textContent =
-            "Weak Password";
-
-        return;
-
+      return;
     }
 
-    if (score <= 4) {
+    show(strengthContainer);
 
-        bar.classList.add(
-            "w-2/3",
-            "bg-yellow-500",
-        );
+    const strength = getPasswordStrength(password);
 
-        text.textContent =
-            "Medium Password";
+    strengthBar.className = `h-full rounded-full transition-all duration-300 ${strength.color}`;
 
-        return;
+    switch (strength.score) {
+      case 0:
+      case 1:
+        strengthBar.style.width = "20%";
+        break;
 
+      case 2:
+        strengthBar.style.width = "40%";
+        break;
+
+      case 3:
+        strengthBar.style.width = "60%";
+        break;
+
+      case 4:
+        strengthBar.style.width = "80%";
+        break;
+
+      default:
+        strengthBar.style.width = "100%";
     }
 
-    bar.classList.add(
-        "w-full",
-        "bg-green-500",
-    );
+    setText(strengthText, strength.label);
+  });
 
-    text.textContent =
-        "Strong Password";
+  //--------------------------------------------------
+  // Live Password Match
+  //--------------------------------------------------
 
-}
+  function updatePasswordMatch() {
+    if (!confirmPasswordField.value) {
+      setText(passwordMatchMessage, "");
 
-/**
- * Live password match.
- */
-function initializePasswordMatch(
-    passwordField,
-    confirmPasswordField,
-    message,
-) {
-
-    if (!confirmPasswordField) return;
-
-    function update() {
-
-        if (!confirmPasswordField.value) {
-
-            message.textContent = "";
-
-            return;
-
-        }
-
-        const match =
-            validateConfirmPassword(
-                passwordField.value,
-                confirmPasswordField.value,
-            );
-
-        if (match) {
-
-            message.textContent =
-                "✓ Passwords match";
-
-            message.className =
-                "mt-2 text-sm text-green-600";
-
-        } else {
-
-            message.textContent =
-                "✗ Passwords do not match";
-
-            message.className =
-                "mt-2 text-sm text-red-500";
-
-        }
-
+      return;
     }
 
-    passwordField.addEventListener(
-        "input",
-        update,
+    const matched = passwordsMatch(
+      passwordField.value,
+      confirmPasswordField.value,
     );
 
-    confirmPasswordField.addEventListener(
-        "input",
-        update,
+    if (matched) {
+      passwordMatchMessage.className = "mt-2 text-sm text-green-600";
+
+      setText(passwordMatchMessage, "✓ Passwords match");
+    } else {
+      passwordMatchMessage.className = "mt-2 text-sm text-red-500";
+
+      setText(passwordMatchMessage, "✗ Passwords do not match");
+    }
+  }
+
+  on(passwordField, "input", updatePasswordMatch);
+
+  on(confirmPasswordField, "input", updatePasswordMatch);
+
+  // --------------------------------------------------
+  // PART 2 STARTS HERE
+  // (Validation + Submit + Browser Restore)
+  // --------------------------------------------------
+  /* --------------------------------------------------
+   * Validation
+   * -------------------------------------------------- */
+
+  function validateForm() {
+    clearFormErrors(form);
+
+    passwordField.value = trim(passwordField.value);
+
+    confirmPasswordField.value = trim(confirmPasswordField.value);
+
+    const passwordValid = validatePasswordField(passwordField);
+
+    const confirmPasswordValid = validateConfirmPasswordField(
+      passwordField,
+      confirmPasswordField,
     );
 
-}
+    return passwordValid && confirmPasswordValid;
+  }
+
+  /* --------------------------------------------------
+   * Submit
+   * -------------------------------------------------- */
+
+  on(form, "submit", (event) => {
+    if (isSubmitting) {
+      event.preventDefault();
+
+      return;
+    }
+
+    if (!validateForm()) {
+      event.preventDefault();
+
+      return;
+    }
+
+    isSubmitting = true;
+
+    setButtonLoading(resetButton, "Resetting Password...");
+  });
+
+  /* --------------------------------------------------
+   * Browser Back Restore
+   * -------------------------------------------------- */
+
+  on(window, "pageshow", () => {
+    isSubmitting = false;
+
+    resetButtonLoading(resetButton);
+  });
+});
