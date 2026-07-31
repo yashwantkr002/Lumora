@@ -86,6 +86,7 @@ def register_view(request):
                 login(
                     request,
                     user,
+                    backend="app.authentication.email_backend.EmailBackend",
                 )
 
                 messages.success(

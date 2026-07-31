@@ -46,6 +46,25 @@ class AuthImportTests(TestCase):
         self.assertTrue(hasattr(auth_views, "social_login_callback"))
 
 
+class RegistrationViewTests(TestCase):
+    def test_registration_logs_new_user_in(self):
+        response = self.client.post(
+            reverse("register"),
+            {
+                "username": "newuser",
+                "email": "new@example.com",
+                "first_name": "New",
+                "last_name": "User",
+                "password": "StrongPass123!",
+                "confirm_password": "StrongPass123!",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        user = get_user_model().objects.get(email="new@example.com")
+        self.assertEqual(self.client.session["_auth_user_id"], str(user.pk))
+
+
 class ChatMessageServiceTests(TestCase):
     def test_send_message_returns_serialized_payload(self):
         user = get_user_model().objects.create_user(

@@ -62,12 +62,15 @@ class Notification(
         CustomUser,
         on_delete=models.CASCADE,
         related_name="notifications",
+        null=True,
+        blank=True,
     )
 
     actor = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
         related_name="sent_notifications",
+        null=True,
         blank=True,
     )
 
