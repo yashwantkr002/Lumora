@@ -1,0 +1,110 @@
+{% load static %}
+
+<div class="flex items-center justify-between p-5">
+
+    <!-- Author -->
+
+    <div class="flex items-center gap-4">
+
+        <a href="{% url 'profile' post.author.username %}">
+
+            {% if post.author.profile.avatar %}
+
+                <img
+                    src="{{ post.author.profile.avatar.url }}"
+                    alt="{{ post.author.username }}"
+                    class="h-12 w-12 rounded-full object-cover"
+                >
+
+            {% else %}
+
+                <img
+                    src="{% static 'images/default-avatar.png' %}"
+                    alt="{{ post.author.username }}"
+                    class="h-12 w-12 rounded-full object-cover"
+                >
+
+            {% endif %}
+
+        </a>
+
+        <div>
+
+            <div class="flex items-center gap-2">
+
+                <a
+                    href="{% url 'profile' post.author.username %}"
+                    class="font-semibold hover:text-primary transition"
+                >
+
+                    {{ post.author.get_full_name|default:post.author.username }}
+
+                </a>
+
+                {% if post.author.verification.is_verified %}
+
+                    <i
+                        class="fa-solid fa-circle-check text-blue-500"
+                        title="Verified"
+                    ></i>
+
+                {% endif %}
+
+            </div>
+
+            <div
+                class="flex items-center gap-2 text-sm text-slate-500"
+            >
+
+                <span>
+
+                    @{{ post.author.username }}
+
+                </span>
+
+                <span>•</span>
+
+                <span>
+
+                    {{ post.created_at|timesince }} ago
+
+                </span>
+
+                {% if post.location %}
+
+                    <span>•</span>
+
+                    <span>
+
+                        {{ post.location }}
+
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Owner Menu -->
+
+    {% if request.user == post.author %}
+
+        <div>
+
+            <button
+                type="button"
+                class="rounded-lg p-2 transition hover:bg-slate-100 dark:hover:bg-slate-800"
+            >
+
+                <i class="fa-solid fa-ellipsis"></i>
+
+            </button>
+
+        </div>
+
+    {% endif %}
+
+</div>

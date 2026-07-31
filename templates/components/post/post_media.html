@@ -1,0 +1,91 @@
+{% load static %}
+
+{% if post.media.exists %}
+
+<div class="overflow-hidden bg-black">
+
+    {% if post.media.count == 1 %}
+
+        {% with media=post.media.first %}
+
+            {% if media.media_type == "image" %}
+
+                <img
+                    src="{{ media.file.url }}"
+                    alt="{{ post.caption|default:'Post image' }}"
+                    class="max-h-[750px] w-full object-contain"
+                    loading="lazy"
+                >
+
+            {% elif media.media_type == "video" %}
+
+                <video
+                    class="max-h-[750px] w-full"
+                    controls
+                    playsinline
+                    preload="metadata"
+                >
+
+                    <source
+                        src="{{ media.file.url }}"
+                        type="{{ media.file.file.content_type }}"
+                    >
+
+                    Your browser does not support video.
+
+                </video>
+
+            {% endif %}
+
+        {% endwith %}
+
+    {% else %}
+
+        <div
+            class="flex snap-x snap-mandatory overflow-x-auto scrollbar-hide"
+        >
+
+            {% for media in post.media.all %}
+
+                <div
+                    class="min-w-full snap-center"
+                >
+
+                    {% if media.media_type == "image" %}
+
+                        <img
+                            src="{{ media.file.url }}"
+                            alt="Post image"
+                            class="max-h-[750px] w-full object-contain"
+                            loading="lazy"
+                        >
+
+                    {% elif media.media_type == "video" %}
+
+                        <video
+                            class="max-h-[750px] w-full"
+                            controls
+                            playsinline
+                            preload="metadata"
+                        >
+
+                            <source
+                                src="{{ media.file.url }}"
+                                type="{{ media.file.file.content_type }}"
+                            >
+
+                        </video>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endif %}

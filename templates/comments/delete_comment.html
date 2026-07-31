@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}
+Delete Comment | Lumora
+{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-xl">
+
+    <div
+        class="rounded-3xl border border-red-200 bg-white p-8 shadow-lg dark:border-red-900 dark:bg-slate-900"
+    >
+
+        <!-- Warning Icon -->
+
+        <div class="mb-6 text-center">
+
+            <div
+                class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30"
+            >
+
+                <i
+                    class="fa-solid fa-trash text-3xl text-red-600"
+                ></i>
+
+            </div>
+
+        </div>
+
+        <!-- Heading -->
+
+        <div class="text-center">
+
+            <h1
+                class="text-3xl font-bold"
+            >
+
+                Delete Comment
+
+            </h1>
+
+            <p
+                class="mt-3 text-slate-500"
+            >
+
+                This action cannot be undone.
+
+            </p>
+
+        </div>
+
+        <!-- Preview -->
+
+        <div
+            class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800"
+        >
+
+            <p
+                class="italic"
+            >
+
+                "{{ comment.content }}"
+
+            </p>
+
+        </div>
+
+        <!-- Actions -->
+
+        <form
+            method="post"
+            class="mt-8"
+        >
+
+            {% csrf_token %}
+
+            <div
+                class="flex justify-end gap-4"
+            >
+
+                <a
+                    href="{% url 'post_detail' comment.post.id %}"
+                    class="rounded-xl border border-slate-300 px-6 py-3 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                >
+
+                    Cancel
+
+                </a>
+
+                <button
+                    type="submit"
+                    class="rounded-xl bg-red-600 px-8 py-3 font-semibold text-white transition hover:bg-red-700"
+                >
+
+                    Delete Comment
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

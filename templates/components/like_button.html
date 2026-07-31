@@ -1,0 +1,31 @@
+{% if request.user != user %}
+
+    {% if is_following %}
+
+        <a
+            href="{% url 'unfollow_user' user.username %}"
+            class="inline-flex items-center justify-center rounded-xl border border-red-500 px-5 py-2.5 font-medium text-red-600 transition hover:bg-red-50 dark:hover:bg-red-900/20"
+        >
+
+            <i class="fa-solid fa-user-check mr-2"></i>
+
+            Following
+
+        </a>
+
+    {% else %}
+
+        <a
+            href="{% url 'follow_user' user.username %}"
+            class="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-2.5 font-medium text-white transition hover:opacity-90"
+        >
+
+            <i class="fa-solid fa-user-plus mr-2"></i>
+
+            Follow
+
+        </a>
+
+    {% endif %}
+
+{% endif %}

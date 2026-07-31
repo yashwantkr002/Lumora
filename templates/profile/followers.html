@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+Followers | Lumora
+{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-5xl">
+
+    <!-- ===================================================== -->
+    <!-- FIX #1 -->
+    <!-- Page Header -->
+    <!-- ===================================================== -->
+
+    <div
+        class="mb-8 flex items-center justify-between"
+    >
+
+        <div>
+
+            <h1
+                class="text-3xl font-bold"
+            >
+
+                Followers
+
+            </h1>
+
+            <p
+                class="mt-2 text-slate-500"
+            >
+
+                People following {{ profile_user.username }}
+
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'profile' profile_user.username %}"
+            class="rounded-xl border border-slate-300 px-5 py-2 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+        >
+
+            Back to Profile
+
+        </a>
+
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- FIX #2 -->
+    <!-- Followers List -->
+    <!-- ===================================================== -->
+
+    <div class="space-y-4">
+
+        {% for follower in followers %}
+
+            <div
+                class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+            >
+
+                <div class="flex items-center gap-4">
+
+                    <!-- Avatar -->
+
+                    {% if follower.follower.profile.avatar %}
+
+                        <img
+                            src="{{ follower.follower.profile.avatar.url }}"
+                            alt="{{ follower.follower.username }}"
+                            class="h-14 w-14 rounded-full object-cover"
+                        >
+
+                    {% else %}
+
+                        <img
+                            src="{% static 'images/default-avatar.png' %}"
+                            alt="Default Avatar"
+                            class="h-14 w-14 rounded-full object-cover"
+                        >
+
+                    {% endif %}
+
+                    <!-- User Info -->
+
+                    <div>
+
+                        <h2 class="font-semibold">
+
+                            {{ follower.follower.get_full_name|default:follower.follower.username }}
+
+                        </h2>
+
+                        <p
+                            class="text-sm text-slate-500"
+                        >
+
+                            @{{ follower.follower.username }}
+
+                        </p>
+
+                        {% if follower.follower.profile.bio %}
+
+                            <p
+                                class="mt-1 text-sm text-slate-600 dark:text-slate-400"
+                            >
+
+                                {{ follower.follower.profile.bio|truncatechars:80 }}
+
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <!-- Profile Button -->
+
+                <a
+                    href="{% url 'profile' follower.follower.username %}"
+                    class="rounded-xl bg-primary px-5 py-2 text-white transition hover:opacity-90"
+                >
+
+                    View Profile
+
+                </a>
+
+            </div>
+
+        {% empty %}
+
+            <!-- ===================================================== -->
+            <!-- FIX #3 -->
+            <!-- Empty State -->
+            <!-- ===================================================== -->
+
+            <div
+                class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-700 dark:bg-slate-900"
+            >
+
+                <i
+                    class="fa-solid fa-user-group mb-4 text-5xl text-slate-400"
+                ></i>
+
+                <h3
+                    class="text-xl font-semibold"
+                >
+
+                    No Followers Yet
+
+                </h3>
+
+                <p
+                    class="mt-2 text-slate-500"
+                >
+
+                    Nobody is following this profile yet.
+
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,82 @@
+{% load static %}
+<footer
+    class="mt-10 border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"
+>
+
+    <div
+        class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-8 text-center text-sm text-slate-500 md:flex-row"
+    >
+
+        <!-- Logo -->
+
+        <div
+            class="flex items-center gap-3"
+        >
+
+            <img
+                src="{% static 'images/closeeye.png' %}"
+                alt="Lumora"
+                class="h-8 w-8"
+            >
+
+            <span
+                class="font-semibold text-slate-700 dark:text-slate-200"
+            >
+
+                Lumora
+
+            </span>
+
+        </div>
+
+        <!-- Navigation -->
+
+        <div
+            class="flex flex-wrap items-center justify-center gap-6"
+        >
+
+            <a
+                href="{% url 'post:feed' %}"
+                class="hover:text-primary"
+            >
+                Home
+            </a>
+
+            <a
+                href="{% url 'search' %}"
+                class="hover:text-primary"
+            >
+                Explore
+            </a>
+
+            <a
+                href="{% url 'story:feed_story' %}"
+                class="hover:text-primary"
+            >
+                Stories
+            </a>
+
+            <a
+                {% comment %} href="{% url 'conversations' %}" {% endcomment %}
+                class="hover:text-primary"
+            >
+                Chat
+            </a>
+
+        </div>
+
+        <!-- Copyright -->
+
+        <div>
+
+            © {% now "Y" %}
+
+            Lumora.
+
+            All Rights Reserved.
+
+        </div>
+
+    </div>
+
+</footer>

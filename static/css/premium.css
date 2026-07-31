@@ -1,0 +1,24 @@
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-image: radial-gradient(circle at top left, rgba(99, 102, 241, 0.12), transparent 30%),
+    linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+main {
+  border-radius: 1.5rem;
+}
+
+article, .rounded-3xl, .rounded-2xl {
+  box-shadow: 0 20px 40px -24px rgba(15, 23, 42, 0.2);
+}
+
+button, a, input, textarea {
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+button:hover, a:hover, input:focus, textarea:focus {
+  transform: translateY(-1px);
+}

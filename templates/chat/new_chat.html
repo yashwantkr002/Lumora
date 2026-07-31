@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}
+New Chat | Lumora
+{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-4xl">
+
+    <div
+        class="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg dark:border-slate-800 dark:bg-slate-900"
+    >
+
+        <!-- Header -->
+
+        <div class="mb-8">
+
+            <h1
+                class="text-3xl font-bold"
+            >
+
+                Start New Conversation
+
+            </h1>
+
+            <p
+                class="mt-2 text-slate-500"
+            >
+
+                Search for a user and start chatting instantly.
+
+            </p>
+
+        </div>
+
+        <!-- Search -->
+
+        <form
+            method="get"
+            class="mb-8"
+        >
+
+            <div class="relative">
+
+                <i
+                    class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                ></i>
+
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ request.GET.q }}"
+                    placeholder="Search users..."
+                    class="w-full rounded-xl border border-slate-300 bg-slate-50 py-3 pl-12 pr-4 focus:border-primary focus:outline-none dark:border-slate-700 dark:bg-slate-800"
+                >
+
+            </div>
+
+        </form>
+
+        <!-- Users -->
+
+        {% if users %}
+
+            <div class="space-y-4">
+
+                {% for user in users %}
+
+                    <div
+                        class="flex items-center justify-between rounded-2xl border border-slate-200 p-5 transition hover:shadow-md dark:border-slate-700"
+                    >
+
+                        <div class="flex items-center gap-4">
+
+                            <img
+                                src="{{ user.profile.avatar.url }}"
+                                alt="{{ user.username }}"
+                                class="h-14 w-14 rounded-full object-cover"
+                            >
+
+                            <div>
+
+                                <h2
+                                    class="font-semibold"
+                                >
+
+                                    {{ user.get_full_name|default:user.username }}
+
+                                </h2>
+
+                                <p
+                                    class="text-sm text-slate-500"
+                                >
+
+                                    @{{ user.username }}
+
+                                </p>
+
+                                {% if user.profile.bio %}
+
+                                    <p
+                                        class="mt-1 text-sm text-slate-600 dark:text-slate-400"
+                                    >
+
+                                        {{ user.profile.bio|truncatechars:60 }}
+
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                        <a
+                            href="{% url 'create_conversation' user.username %}"
+                            class="rounded-xl bg-primary px-5 py-2 text-white hover:opacity-90"
+                        >
+
+                            Message
+
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div
+                class="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-12 text-center dark:border-slate-700 dark:bg-slate-800"
+            >
+
+                <i
+                    class="fa-solid fa-user-plus mb-5 text-5xl text-slate-400"
+                ></i>
+
+                <h2
+                    class="text-2xl font-bold"
+                >
+
+                    No Users Found
+
+                </h2>
+
+                <p
+                    class="mt-2 text-slate-500"
+                >
+
+                    Try searching with another username.
+
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

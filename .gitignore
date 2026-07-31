@@ -1,0 +1,77 @@
+# ==========================================
+# Python & Django Core Exclusions
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Django Local Databases
+*.sqlite3
+
+# Django Media and Collected Static Directories
+media/
+staticfiles/
+static_cdn/
+
+# ==========================================
+# Environments & Credentials
+# ==========================================
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# Environment variables containing sensitive keys/passwords
+.env
+.env.local
+.env.*
+.env.example
+
+# ==========================================
+# Django / Deployment Extras
+# ==========================================
+local_settings.py
+*.log
+*.pot
+*.sql
+*.dump
+celerybeat-schedule
+*.sqlite3-journal
+
+auto-generated/
+
+# ==========================================
+# Testing & Code Quality
+# ==========================================
+.htmlcov/
+.coverage
+.tox/
+.pytest_cache/
+.mypy_cache/
+
+# ==========================================
+# Frontend / Tooling
+# ==========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==========================================
+# Operating System & IDE Specifics
+# ==========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Ehthumbs.db
+
+# IDEs (VS Code, PyCharm)
+.vscode/
+.idea/

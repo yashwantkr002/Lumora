@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+Create Story | Lumora
+{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-2xl">
+
+    <div
+        class="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg dark:border-slate-800 dark:bg-slate-900"
+    >
+
+        <!-- Header -->
+
+        <div class="mb-8">
+
+            <h1
+                class="text-3xl font-bold"
+            >
+
+                Create Story
+
+            </h1>
+
+            <p
+                class="mt-2 text-slate-500"
+            >
+
+                Share a photo or video that disappears after 24 hours.
+
+            </p>
+
+        </div>
+
+        <form
+            method="post"
+            enctype="multipart/form-data"
+            class="space-y-6"
+        >
+
+            {% csrf_token %}
+
+            <!-- Media -->
+
+            <div>
+
+                <label class="mb-2 block font-semibold">
+
+                    Photo / Video
+
+                </label>
+
+                {{ form.media }}
+
+            </div>
+
+            <!-- Preview -->
+
+            <div
+                id="story-preview"
+                class="hidden"
+            >
+
+                <img
+                    id="story-image-preview"
+                    class="max-h-96 w-full rounded-2xl object-cover"
+                    alt="Preview"
+                >
+
+            </div>
+
+            <!-- Caption -->
+
+            <div>
+
+                <label class="mb-2 block font-semibold">
+
+                    Caption
+
+                </label>
+
+                {{ form.caption }}
+
+            </div>
+
+            <!-- Privacy -->
+
+            <div>
+
+                <label class="mb-2 block font-semibold">
+
+                    Visibility
+
+                </label>
+
+                {{ form.visibility }}
+
+            </div>
+
+            <!-- Buttons -->
+
+            <div
+                class="flex justify-end gap-4"
+            >
+
+                <a
+                    href="{% url 'story:feed_story' %}"
+                    class="rounded-xl border border-slate-300 px-6 py-3 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                >
+
+                    Cancel
+
+                </a>
+
+                <button
+                    type="submit"
+                    class="rounded-xl bg-primary px-8 py-3 font-semibold text-white hover:opacity-90"
+                >
+
+                    Publish Story
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+const storyInput =
+    document.querySelector(
+        'input[type="file"]'
+    );
+
+const preview =
+    document.getElementById(
+        "story-image-preview"
+    );
+
+const previewContainer =
+    document.getElementById(
+        "story-preview"
+    );
+
+if (storyInput) {
+
+    storyInput.addEventListener(
+        "change",
+        function(event) {
+
+            const file =
+                event.target.files[0];
+
+            if (!file) {
+
+                previewContainer.classList.add(
+                    "hidden"
+                );
+
+                return;
+
+            }
+
+            preview.src =
+                URL.createObjectURL(file);
+
+            previewContainer.classList.remove(
+                "hidden"
+            );
+
+        }
+    );
+
+}
+
+</script>
+
+{% endblock %}

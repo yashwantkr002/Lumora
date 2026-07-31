@@ -1,0 +1,122 @@
+<div class="p-5">
+  <!-- =================================================== -->
+  <!-- Action Buttons -->
+  <!-- =================================================== -->
+
+  <div class="mb-4 flex items-center justify-between">
+    <div class="flex items-center gap-6">
+      <!-- =========================================== -->
+      <!-- Like -->
+      <!-- =========================================== -->
+
+      <button
+        type="button"
+        data-like-button
+        data-url="{% url 'like:toggle' post.id %}"
+        class="flex items-center gap-2 transition hover:scale-110"
+        title="Like"
+      >
+        <i
+          class="{% if post.is_liked %} fa-solid text-red-500 {% else %} fa-regular {% endif %} fa-heart text-2xl"
+          data-like-icon
+        ></i>
+
+        <span data-like-count class="text-sm font-medium">
+          {{ post.likes_count }}
+        </span>
+      </button>
+
+      <!-- =========================================== -->
+      <!-- Comment -->
+      <!-- =========================================== -->
+
+      <a
+        href="{% url 'post:detail' post.id %}#comments"
+        class="transition hover:scale-110"
+        title="Comment"
+      >
+        <i class="fa-regular fa-comment text-2xl"></i>
+      </a>
+
+      <!-- =========================================== -->
+      <!-- Share -->
+      <!-- =========================================== -->
+
+      <button
+        type="button"
+        data-share-trigger
+        class="transition hover:scale-110"
+        title="Share"
+      >
+        <i class="fa-regular fa-paper-plane text-2xl"></i>
+      </button>
+    </div>
+
+    <!-- =========================================== -->
+    <!-- Save -->
+    <!-- =========================================== -->
+
+    <button
+      type="button"
+      data-save-button
+      data-post-id="{{ post.id }}"
+      data-url="{% url 'save:toggle' post.id %}"
+      class="transition hover:scale-110"
+      title="Save"
+    >
+      <i
+        data-save-icon
+        class="{% if post.is_saved %} fa-solid {% else %} fa-regular {% endif %} fa-bookmark text-2xl"
+      ></i>
+    </button>
+  </div>
+
+  <!-- =================================================== -->
+  <!-- Statistics -->
+  <!-- =================================================== -->
+
+  <div class="space-y-1">
+    <p class="font-semibold">
+      <span data-like-total> {{ post.likes_count }} </span>
+
+      likes
+    </p>
+
+    <p class="text-sm text-slate-500">{{ post.comments_count }} comments</p>
+
+    <p class="text-sm text-slate-500">{{ post.views_count }} views</p>
+  </div>
+</div>
+
+<div
+  id="share-modal"
+  class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-900/70 px-4"
+>
+  <div id="share-modal-backdrop" class="absolute inset-0"></div>
+  <div class="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+    <div class="mb-4 flex items-center justify-between">
+      <div>
+        <h3 class="text-lg font-semibold">Share this post</h3>
+        <p class="text-sm text-slate-500">Send this update to your circle.</p>
+      </div>
+      <button id="share-modal-close" type="button" class="rounded-full p-2 hover:bg-slate-100 dark:hover:bg-slate-800">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <label class="mb-2 block text-sm font-medium" for="share-message">Message</label>
+    <textarea
+      id="share-message"
+      data-share-field
+      rows="4"
+      class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 outline-none focus:border-primary dark:border-slate-700 dark:bg-slate-800"
+      placeholder="Write something about this post..."
+    ></textarea>
+
+    <div class="mt-4 flex justify-end gap-3">
+      <button type="button" class="rounded-xl border px-4 py-2 text-sm">Cancel</button>
+      <button type="button" class="rounded-xl bg-primary px-4 py-2 text-sm font-medium text-white">Share</button>
+    </div>
+  </div>
+</div>
+    

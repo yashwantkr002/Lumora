@@ -1,0 +1,235 @@
+<div class="sticky top-24 space-y-6">
+
+    <!-- Trending -->
+
+    <div
+        class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+    >
+
+        <h3
+            class="mb-4 text-lg font-semibold"
+        >
+
+            Trending
+
+        </h3>
+
+        <div class="space-y-4">
+
+            <a
+                href="#"
+                class="block hover:text-primary"
+            >
+
+                <p class="font-medium">
+
+                    #Python
+
+                </p>
+
+                <p
+                    class="text-sm text-slate-500"
+                >
+
+                    12.5K Posts
+
+                </p>
+
+            </a>
+
+            <a
+                href="#"
+                class="block hover:text-primary"
+            >
+
+                <p class="font-medium">
+
+                    #Django
+
+                </p>
+
+                <p
+                    class="text-sm text-slate-500"
+                >
+
+                    8.2K Posts
+
+                </p>
+
+            </a>
+
+            <a
+                href="#"
+                class="block hover:text-primary"
+            >
+
+                <p class="font-medium">
+
+                    #AI
+
+                </p>
+
+                <p
+                    class="text-sm text-slate-500"
+                >
+
+                    18K Posts
+
+                </p>
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Suggested Users -->
+
+    <div
+        class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+    >
+
+        <h3
+            class="mb-4 text-lg font-semibold"
+        >
+
+            Suggested For You
+
+        </h3>
+
+        {% for user in suggested_users %}
+
+            <div
+                class="mb-4 flex items-center justify-between"
+            >
+
+                <div
+                    class="flex items-center gap-3"
+                >
+
+                    {% if user.profile.avatar %}
+                        <img
+                            src="{{ user.profile.avatar.url }}"
+                            alt="{{ user.username }}"
+                            class="h-10 w-10 rounded-full object-cover"
+                        >
+                    {% else %}
+                        <div
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-300 text-sm font-semibold text-slate-700"
+                        >
+                            {{ user.username|first|upper }}
+                        </div>
+                    {% endif %}
+
+                    <div>
+
+                        <p
+                            class="font-medium"
+                        >
+
+                            {{ user.username }}
+
+                        </p>
+
+                        <p
+                            class="text-xs text-slate-500"
+                        >
+
+                            {{ user.profile.bio|truncatechars:25 }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <a
+                    href="{% url 'follow_user' user.username %}"
+                    class="rounded-lg bg-primary px-3 py-1 text-sm text-white hover:opacity-90"
+                >
+
+                    Follow
+
+                </a>
+
+            </div>
+
+        {% empty %}
+
+            <p
+                class="text-sm text-slate-500"
+            >
+
+                No suggestions available.
+
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- Online Friends -->
+
+    <div
+        class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+    >
+
+        <h3
+            class="mb-4 text-lg font-semibold"
+        >
+
+            Online Friends
+
+        </h3>
+
+        {% for user in online_users %}
+
+            <div
+                class="mb-3 flex items-center gap-3"
+            >
+
+                <div class="relative">
+
+                    {% if user.profile.avatar %}
+                        <img
+                            src="{{ user.profile.avatar.url }}"
+                            alt="{{ user.username }}"
+                            class="h-10 w-10 rounded-full object-cover"
+                        >
+                    {% else %}
+                        <div
+                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-300 text-sm font-semibold text-slate-700"
+                        >
+                            {{ user.username|first|upper }}
+                        </div>
+                    {% endif %}
+
+                    <span
+                        class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-green-500"
+                    ></span>
+
+                </div>
+
+                <span>
+
+                    {{ user.username }}
+
+                </span>
+
+            </div>
+
+        {% empty %}
+
+            <p
+                class="text-sm text-slate-500"
+            >
+
+                Nobody is online.
+
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>

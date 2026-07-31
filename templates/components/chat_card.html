@@ -1,0 +1,84 @@
+<a
+    href="{% url 'chat_room' conversation.id %}"
+    class="block border-b border-slate-200 p-5 transition-all duration-300 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800"
+>
+
+    <div class="flex items-center justify-between">
+
+        <div class="flex items-center gap-4">
+
+            <!-- Avatar -->
+
+            <div class="relative">
+
+                <img
+                    src="{{ conversation.other_user.profile.avatar.url }}"
+                    alt="{{ conversation.other_user.username }}"
+                    class="h-14 w-14 rounded-full object-cover"
+                >
+
+                {% if conversation.other_user.profile.is_online %}
+
+                    <span
+                        class="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-white bg-green-500 dark:border-slate-900"
+                    ></span>
+
+                {% endif %}
+
+            </div>
+
+            <!-- Chat Info -->
+
+            <div>
+
+                <h3
+                    class="font-semibold"
+                >
+
+                    {{ conversation.other_user.get_full_name|default:conversation.other_user.username }}
+
+                </h3>
+
+                <p
+                    class="mt-1 max-w-xs truncate text-sm text-slate-500"
+                >
+
+                    {{ conversation.last_message|default:"Start a conversation..." }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- Right Side -->
+
+        <div
+            class="flex flex-col items-end gap-2"
+        >
+
+            <span
+                class="text-xs text-slate-500"
+            >
+
+                {{ conversation.updated_at|timesince }} ago
+
+            </span>
+
+            {% if conversation.unread_count %}
+
+                <span
+                    class="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-primary px-2 text-xs font-bold text-white"
+                >
+
+                    {{ conversation.unread_count }}
+
+                </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</a>

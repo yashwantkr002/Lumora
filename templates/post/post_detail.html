@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}
+Post | Lumora
+{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-3xl space-y-8">
+
+    <!-- =============================================== -->
+    <!-- Post -->
+    <!-- =============================================== -->
+
+    {% include "components/post/post_card.html" %}
+
+    <!-- =============================================== -->
+    <!-- Comments -->
+    <!-- =============================================== -->
+
+    <section
+        id="comments"
+        class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+    >
+
+        <div
+            class="mb-6 flex items-center justify-between"
+        >
+
+            <h2
+                class="text-xl font-semibold"
+            >
+
+                Comments
+
+            </h2>
+
+            <span
+                class="rounded-full bg-slate-100 px-3 py-1 text-sm dark:bg-slate-800"
+            >
+
+                {{ post.comments_count }}
+
+            </span>
+
+        </div>
+
+        {% if comments %}
+
+            <div class="space-y-5">
+
+                {% for comment in comments %}
+
+                    {% include "components/comment/comment_card.html" %}
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            {% include "components/comment/empty_comments.html" %}
+
+        {% endif %}
+
+    </section>
+
+    <!-- =============================================== -->
+    <!-- Comment Form -->
+    <!-- =============================================== -->
+
+    {% if request.user.is_authenticated %}
+
+        <section
+            class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+        >
+
+            <h2
+                class="mb-5 text-lg font-semibold"
+            >
+
+                Leave a Comment
+
+            </h2>
+
+            {% include "components/comment/comment_form.html" %}
+
+        </section>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

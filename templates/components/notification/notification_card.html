@@ -1,0 +1,98 @@
+<article
+    class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800 {% if not notification.is_read %}border-l-4 border-l-primary{% endif %}",
+    data-notification-card
+>
+
+    <div
+        class="flex items-start gap-4"
+    >
+
+        <!-- =========================================== -->
+        <!-- Actor Avatar -->
+        <!-- =========================================== -->
+
+        <a
+            href="{% url 'profile:detail' notification.actor.username %}"
+        >
+
+            <img
+                src="{{ notification.actor.profile.avatar.url }}"
+                alt="{{ notification.actor.username }}"
+                class="h-12 w-12 rounded-full object-cover"
+            >
+
+        </a>
+
+        <!-- =========================================== -->
+        <!-- Content -->
+        <!-- =========================================== -->
+
+        <div
+            class="flex-1"
+        >
+
+            <p
+                class="leading-6"
+            >
+
+                <a
+                    href="{% url 'profile:detail' notification.actor.username %}"
+                    class="font-semibold hover:text-primary"
+                >
+
+                    {{ notification.actor.username }}
+
+                </a>
+
+                {% if notification.notification_type == "like" %}
+
+                    liked your post ❤️
+
+                {% elif notification.notification_type == "comment" %}
+
+                    commented on your post 💬
+
+                {% elif notification.notification_type == "follow" %}
+
+                    started following you 👤
+
+                {% elif notification.notification_type == "reply" %}
+
+                    replied to your comment ↩️
+
+                {% elif notification.notification_type == "mention" %}
+
+                    mentioned you 📢
+
+                {% endif %}
+
+            </p>
+
+            <p
+                class="mt-2 text-sm text-slate-500"
+            >
+
+                {{ notification.created_at|timesince }}
+
+                ago
+
+            </p>
+
+        </div>
+
+        <!-- =========================================== -->
+        <!-- Status -->
+        <!-- =========================================== -->
+
+        {% if not notification.is_read %}
+
+            <span
+                class="mt-2 h-3 w-3 rounded-full bg-primary"
+                title="Unread"
+            ></span>
+
+        {% endif %}
+
+    </div>
+
+</article>
