@@ -15,6 +15,7 @@ import logging
 from django.db import transaction
 
 from app.models.like import Like
+from app.models.notification import Notification
 from app.models.post import Post
 from app.models.user import CustomUser
 
@@ -114,6 +115,7 @@ class LikeToggleService:
         NotificationCreateService.create_notification(
             actor=user,
             recipient=post.author,
+            notification_type=Notification.LIKE,
             post=post,
         )
         return LikeUtilsService.build_toggle_result(

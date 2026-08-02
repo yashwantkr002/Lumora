@@ -6,18 +6,18 @@ Home | Lumora
 
 {% block content %}
 
-<div class="mx-auto max-w-3xl space-y-6">
+<div class="mx-auto max-w-3xl space-y-4 pb-20 sm:space-y-6 sm:pb-6">
 
     <!-- Feed Header -->
 
     <div
-        class="flex items-center justify-between"
+        class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:items-center sm:justify-between sm:p-5"
     >
 
         <div>
 
             <h1
-                class="text-3xl font-bold"
+                class="text-2xl font-bold sm:text-3xl"
             >
 
                 Home Feed
@@ -25,7 +25,7 @@ Home | Lumora
             </h1>
 
             <p
-                class="mt-1 text-slate-500"
+                class="mt-1 text-sm text-slate-500 sm:text-base"
             >
 
                 Discover the latest posts from people you follow.
@@ -36,7 +36,7 @@ Home | Lumora
 
         <a
             href="{% url 'post:create' %}"
-            class="rounded-xl bg-primary px-5 py-3 font-medium text-white transition hover:opacity-90"
+            class="w-full rounded-xl bg-primary px-5 py-3 font-medium text-white transition hover:opacity-90 sm:w-auto"
         >
 
             Create Post

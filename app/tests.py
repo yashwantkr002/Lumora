@@ -6,9 +6,12 @@ from django.urls import reverse
 from django.utils import timezone
 
 from app.models.conversation import Conversation
+from app.models.notification import Notification
+from app.models.post import Post
 from app.models.story import Story
 from app.models.user import UserProfile
 from app.services.chat.message import MessageService
+from app.services.like.toggle import LikeToggleService
 
 
 class StoryDetailViewTests(TestCase):
@@ -84,3 +87,25 @@ class ChatMessageServiceTests(TestCase):
         self.assertEqual(payload["content"], "hello world")
         self.assertEqual(payload["sender_name"], user.username)
         self.assertEqual(payload["conversation_id"], str(conversation.id))
+
+
+class NotificationServiceTests(TestCase):
+    def test_liking_a_post_creates_a_notification_for_the_author(self):
+        actor = get_user_model().objects.create_user(
+            email="actor@example.com",
+            username="actor",
+            password="strongpass123",
+        )
+        author = get_user_model().objects.create_user(
+            email="author@example.com",
+            username="author",
+            password="strongpass123",
+        )
+        post = Post.objects.create(author=author, caption="A test post")
+
+        result = LikeToggleService.toggle_like(post=post, user=actor)
+
+        self.assertTrue(result["liked"])
+        notification = Notification.objects.get(recipient=author, actor=actor)
+        self.assertEqual(notification.notification_type, Notification.LIKE)
+        self.assertFalse(notification.is_read)

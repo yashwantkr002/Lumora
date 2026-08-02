@@ -1,0 +1,19 @@
+{
+  "name": "Lumora",
+  "short_name": "Lumora",
+  "description": "Modern social media platform built with Django",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#6366F1",
+  "icons": [
+    {
+      "src": "/static/images/icons/lumora-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

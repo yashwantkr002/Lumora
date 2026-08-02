@@ -33,7 +33,7 @@ class NotificationCreateService:
         *,
         recipient: CustomUser,
         actor: CustomUser,
-        notification_type: str,
+        notification_type: str | None = None,
         post: Post | None = None,
         comment: Comment | None = None,
     ) -> Notification | None:
@@ -51,6 +51,9 @@ class NotificationCreateService:
         if recipient == actor:
 
             return None
+
+        if notification_type is None:
+            notification_type = Notification.LIKE
 
         # -------------------------------------------------------
         # Create Notification

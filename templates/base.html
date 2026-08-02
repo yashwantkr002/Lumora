@@ -16,9 +16,17 @@
 
     <meta name="csrf-token" content="{{ csrf_token }}" />
 
+    <meta name="theme-color" content="#6366F1" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
     <title>{% block title %} Lumora {% endblock %}</title>
 
     <link rel="icon" href="{% static 'images/favicon.ico' %}" />
+
+    <link rel="manifest" href="{% static 'manifest.json' %}" />
 
     <!-- Google Fonts -->
 
@@ -67,14 +75,14 @@
     {% block styles %} {% endblock %}
   </head>
   <body
-    class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300"
+    class="min-h-screen bg-slate-100 text-slate-800 transition-colors duration-300 dark:bg-slate-900 dark:text-slate-100"
   >
     <!-- Loader -->
 
     {% include "includes/loader.html" %} {% include "includes/navbar.html" %}
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-12 gap-6 py-6">
+    <div class="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-12 gap-3 py-3 sm:gap-6 sm:py-6">
         <!-- Left Sidebar -->
 
         <aside class="hidden lg:block lg:col-span-3">
@@ -84,7 +92,7 @@
 
         <!-- Main Content -->
 
-        <main id="main-content-shell" class="col-span-12 lg:col-span-6">
+        <main id="main-content-shell" class="col-span-12 pb-24 sm:pb-6 lg:col-span-6">
           {% if user.is_authenticated %} {% include "includes/messages.html" %}
           {% endif %} {% block content %} {% endblock %}
         </main>
@@ -119,6 +127,14 @@
     <!-- Theme Toggle -->
 
     {% include "includes/theme_toggle.html" %}
+
+    <button
+      id="pwa-install-button"
+      class="hidden fixed bottom-24 right-6 z-50 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white shadow-lg"
+      type="button"
+    >
+      Install app
+    </button>
 
     <!-- Alpine.js -->
 

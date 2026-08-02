@@ -78,7 +78,7 @@ class CommentCreateService:
             NotificationCreateService.create_notification(
                 actor=author,
                 recipient=parent.author,
-                notification_type=Notification.NotificationType.REPLY,
+                notification_type=Notification.REPLY,
                 post=post,
                 comment=comment,
             )
@@ -86,7 +86,7 @@ class CommentCreateService:
             NotificationCreateService.create_notification(
                 actor=author,
                 recipient=post.author,
-                notification_type=Notification.NotificationType.COMMENT,
+                notification_type=Notification.COMMENT,
                 post=post,
                 comment=comment,
             )

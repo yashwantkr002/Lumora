@@ -73,7 +73,7 @@ class FollowService:
             NotificationCreateService.create_notification(
                 actor=follower,
                 recipient=following,
-                notification_type=Notification.NotificationType.FOLLOW,
+                notification_type=Notification.FOLLOW,
             )
         # -------------------------------------------------------
         # FIX #4

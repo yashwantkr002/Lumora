@@ -159,6 +159,45 @@ function initRevealAnimations() {
   elements.forEach((element) => observer.observe(element));
 }
 
+function initPwaSupport() {
+  if (!('serviceWorker' in navigator)) return;
+
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/static/js/core/service-worker.js').catch((error) => {
+      console.error('Service worker registration failed:', error);
+    });
+  });
+
+  let deferredPrompt = null;
+  const installButton = document.getElementById('pwa-install-button');
+
+  if (installButton) {
+    installButton.style.display = 'none';
+  }
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredPrompt = event;
+
+    if (installButton) {
+      installButton.style.display = 'inline-flex';
+      installButton.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+
+        if (outcome === 'accepted') {
+          console.log('User accepted the install prompt');
+        }
+
+        deferredPrompt = null;
+        installButton.style.display = 'none';
+      }, { once: true });
+    }
+  });
+}
+
 function init() {
   initTheme();
   initLoader();
@@ -176,6 +215,7 @@ function init() {
   initRealtimeChat();
   initWebSocketChat();
   initMobileUX();
+  initPwaSupport();
 }
 
 document.addEventListener("DOMContentLoaded", init);
