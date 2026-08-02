@@ -61,6 +61,15 @@ def post_detail(request, post_id):
             },
         )
 
+        if request.user.is_authenticated:
+            setattr(
+                post,
+                "_is_liked_by_user",
+                post.likes.filter(user=request.user).exists(),
+            )
+        else:
+            setattr(post, "_is_liked_by_user", False)
+
         return render(
             request,
             "post/post_detail.html",
@@ -77,7 +86,7 @@ def post_detail(request, post_id):
         )
 
         return redirect(
-            "post:post:feed",
+            "post:feed",
         )
 
     except Exception:
@@ -96,5 +105,5 @@ def post_detail(request, post_id):
         )
 
         return redirect(
-            "feed",
+            "post:feed",
         )

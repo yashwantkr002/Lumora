@@ -199,6 +199,12 @@ function initPwaSupport() {
 }
 
 function init() {
+  if (window.__lumoraInitialized) {
+    return;
+  }
+
+  window.__lumoraInitialized = true;
+
   initTheme();
   initLoader();
   initBackToTop();
@@ -218,4 +224,8 @@ function init() {
   initPwaSupport();
 }
 
-document.addEventListener("DOMContentLoaded", init);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init, { once: true });
+} else {
+  init();
+}

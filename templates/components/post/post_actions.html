@@ -17,7 +17,7 @@
         title="Like"
       >
         <i
-          class="{% if post.is_liked %} fa-solid text-red-500 {% else %} fa-regular {% endif %} fa-heart text-2xl"
+          class="{% if request.user.is_authenticated and post.is_liked_by_user %} fa-solid text-red-500 {% else %} fa-regular {% endif %} fa-heart text-2xl"
           data-like-icon
         ></i>
 

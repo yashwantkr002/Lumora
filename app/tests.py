@@ -109,3 +109,51 @@ class NotificationServiceTests(TestCase):
         notification = Notification.objects.get(recipient=author, actor=actor)
         self.assertEqual(notification.notification_type, Notification.LIKE)
         self.assertFalse(notification.is_read)
+
+
+class LikeViewTests(TestCase):
+    def test_like_toggle_view_returns_json_and_updates_count(self):
+        user = get_user_model().objects.create_user(
+            email="liker@example.com",
+            username="liker",
+            password="strongpass123",
+        )
+        author = get_user_model().objects.create_user(
+            email="author2@example.com",
+            username="author2",
+            password="strongpass123",
+        )
+        post = Post.objects.create(author=author, caption="Like me")
+
+        self.client.force_login(user)
+        response = self.client.post(
+            reverse("like:toggle", kwargs={"post_id": post.id}),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["success"])
+        self.assertTrue(response.json()["liked"])
+        self.assertEqual(response.json()["likes_count"], 1)
+
+
+class PostDetailViewTests(TestCase):
+    def test_post_detail_page_renders_for_authenticated_user(self):
+        user = get_user_model().objects.create_user(
+            email="detailviewer@example.com",
+            username="detailviewer",
+            password="strongpass123",
+        )
+        author = get_user_model().objects.create_user(
+            email="detailauthor@example.com",
+            username="detailauthor",
+            password="strongpass123",
+        )
+        post = Post.objects.create(author=author, caption="Visible post")
+
+        self.client.force_login(user)
+        response = self.client.get(
+            reverse("post:detail", kwargs={"post_id": post.id}),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Visible post")

@@ -225,6 +225,14 @@ class Post(
         )
 
     @property
+    def is_liked_by_user(self) -> bool:
+        """
+        Template-safe flag for whether the current user liked this post.
+        """
+
+        return getattr(self, "_is_liked_by_user", False)
+
+    @property
     def media_count(self) -> int:
         """
         Total attached media.

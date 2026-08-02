@@ -32,8 +32,21 @@ function updateSaveButton(button, payload) {
 
 async function handleToggle(button, url, action) {
   const previousLabel = button.getAttribute("aria-label") ?? action;
+  const previousState = button.dataset.liked === "true";
+  const previousCount = Number(button.querySelector("[data-like-count]")?.textContent?.trim() || 0);
+
   button.setAttribute("aria-label", `${action}ing`);
   button.classList.add("opacity-70");
+
+  if (action === "like") {
+    const nextLiked = !previousState;
+    const nextCount = previousCount + (nextLiked ? 1 : -1);
+
+    updateLikeButton(button, {
+      liked: nextLiked,
+      likes_count: Math.max(0, nextCount),
+    });
+  }
 
   try {
     const response = await request(url, {
@@ -59,6 +72,14 @@ async function handleToggle(button, url, action) {
     }
   } catch (error) {
     console.error(error);
+
+    if (action === "like") {
+      updateLikeButton(button, {
+        liked: previousState,
+        likes_count: previousCount,
+      });
+    }
+
     button.classList.add("animate-pulse");
     window.setTimeout(() => button.classList.remove("animate-pulse"), 600);
   } finally {

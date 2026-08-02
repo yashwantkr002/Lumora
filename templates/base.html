@@ -86,8 +86,10 @@
         <!-- Left Sidebar -->
 
         <aside class="hidden lg:block lg:col-span-3">
-          {% if user.is_authenticated %} {% include "includes/sidebar.html" %}
-          {% endif %}
+          <div class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain pb-4 pr-2">
+            {% if user.is_authenticated %} {% include "includes/sidebar.html" %}
+            {% endif %}
+          </div>
         </aside>
 
         <!-- Main Content -->
@@ -100,9 +102,11 @@
         <!-- Right Sidebar -->
 
       <aside class="hidden xl:block xl:col-span-3">
-        {% if user.is_authenticated %}
-          {% include "includes/right_sidebar.html" %}
-        {% endif %}
+        <div class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain pb-4 pr-2">
+          {% if user.is_authenticated %}
+            {% include "includes/right_sidebar.html" %}
+          {% endif %}
+        </div>
       </aside>
       </div>
     </div>
