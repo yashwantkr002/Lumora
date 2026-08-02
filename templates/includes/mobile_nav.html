@@ -1,71 +1,85 @@
 <nav
     id="mobile-nav"
-    class="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200 bg-white/95 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur-lg dark:border-slate-800 dark:bg-slate-900/95 lg:hidden"
+    class="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-200/80 bg-white/90 backdrop-blur-lg pb-[max(0.5rem,env(safe-area-inset-bottom))] dark:border-slate-800/80 dark:bg-slate-900/90 lg:hidden"
 >
-
     {% if request.user.is_authenticated %}
-        <div
-            class="grid grid-cols-5"
-        >
-            <a href="{% url 'post:feed' %}" data-nav-link class="flex flex-col items-center py-3 text-slate-600 transition hover:text-primary dark:text-slate-300">
-                <i class="fa-solid fa-house text-xl"></i>
-                <span class="mt-1 text-xs">Home</span>
+        <!-- Authenticated Navigation (5 Items) -->
+        <div class="grid grid-cols-5 items-center">
+            <!-- Home -->
+            <a href="{% url 'post:feed' %}" data-nav-link class="flex flex-col items-center justify-center py-2.5 text-slate-600 transition hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="mt-1 text-[10px] font-medium tracking-tight">Home</span>
             </a>
 
-            <a href="{% url 'search' %}" data-nav-link class="flex flex-col items-center py-3 text-slate-600 transition hover:text-primary dark:text-slate-300">
-                <i class="fa-solid fa-magnifying-glass text-xl"></i>
-                <span class="mt-1 text-xs">Search</span>
+            <!-- Search -->
+            <a href="{% url 'search' %}" data-nav-link class="flex flex-col items-center justify-center py-2.5 text-slate-600 transition hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+                <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                <span class="mt-1 text-[10px] font-medium tracking-tight">Search</span>
             </a>
 
-            <a href="{% url 'post:create' %}" class="flex flex-col items-center py-3 text-primary">
-                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg">
-                    <i class="fa-solid fa-plus"></i>
+            <!-- Create Post (Primary CTA) -->
+            <a href="{% url 'post:create' %}" aria-label="Create Post" class="flex flex-col items-center justify-center py-1 text-primary transition active:scale-95">
+                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white shadow-md shadow-primary/30">
+                    <i class="fa-solid fa-plus text-base"></i>
                 </div>
             </a>
 
-            <a href="{% url 'notification:list' %}" data-nav-link class="relative flex flex-col items-center py-3 text-slate-600 transition hover:text-primary dark:text-slate-300">
-                <i class="fa-solid fa-bell text-xl"></i>
+            <!-- Alerts -->
+            <a href="{% url 'notification:list' %}" data-nav-link class="relative flex flex-col items-center justify-center py-2.5 text-slate-600 transition hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+                <i class="fa-solid fa-bell text-lg"></i>
                 {% if unread_notifications_count %}
-                    <span class="absolute right-5 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
+                    <span class="absolute right-4 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white ring-2 ring-white dark:ring-slate-900">
                         {{ unread_notifications_count }}
                     </span>
                 {% endif %}
-                <span class="mt-1 text-xs">Alerts</span>
+                <span class="mt-1 text-[10px] font-medium tracking-tight">Alerts</span>
             </a>
 
-            <a href="{% url 'profile' request.user.username %}" data-nav-link class="flex flex-col items-center py-3 text-slate-600 transition hover:text-primary dark:text-slate-300">
+            <!-- Profile -->
+            <a href="{% url 'profile' request.user.username %}" data-nav-link class="flex flex-col items-center justify-center py-2.5 text-slate-600 transition hover:text-primary dark:text-slate-400 dark:hover:text-primary">
                 {% if request.user.profile.avatar %}
-                    <img src="{{ request.user.profile.avatar.url }}" alt="{{ request.user.username }}" class="h-7 w-7 rounded-full object-cover">
+                    <img src="{{ request.user.profile.avatar.url }}" alt="{{ request.user.username }}" class="h-6 w-6 rounded-full object-cover ring-1 ring-slate-300 dark:ring-slate-700">
                 {% else %}
-                    <div class="flex h-7 w-7 items-center justify-center rounded-full bg-slate-300 text-[10px] font-semibold text-slate-700">
+                    <div class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-[10px] font-bold text-slate-700 dark:bg-slate-700 dark:text-slate-200">
                         {{ request.user.username|first|upper }}
                     </div>
                 {% endif %}
-                <span class="mt-1 text-xs">Profile</span>
+                <span class="mt-1 text-[10px] font-medium tracking-tight">Profile</span>
             </a>
         </div>
     {% else %}
-        <div class="grid grid-cols-4">
-            <a href="{% url 'post:feed' %}" data-nav-link class="flex flex-col items-center py-3 text-slate-600 transition hover:text-primary dark:text-slate-300">
-                <i class="fa-solid fa-house text-xl"></i>
-                <span class="mt-1 text-xs">Home</span>
+        <!-- Unauthenticated Navigation (5 Items symmetrical grid) -->
+        <div class="grid grid-cols-5 items-center">
+            <!-- Home -->
+            <a href="{% url 'login' %}" data-nav-link class="flex flex-col items-center justify-center py-2.5 text-slate-600 transition hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="mt-1 text-[10px] font-medium tracking-tight">Home</span>
             </a>
 
-            <a href="{% url 'search' %}" data-nav-link class="flex flex-col items-center py-3 text-slate-600 transition hover:text-primary dark:text-slate-300">
-                <i class="fa-solid fa-magnifying-glass text-xl"></i>
-                <span class="mt-1 text-xs">Search</span>
+            <!-- Search -->
+            <a href="{% url 'login' %}" data-nav-link class="flex flex-col items-center justify-center py-2.5 text-slate-600 transition hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+                <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                <span class="mt-1 text-[10px] font-medium tracking-tight">Search</span>
             </a>
 
-            <a href="{% url 'login' %}" class="flex flex-col items-center py-3 text-slate-600 transition hover:text-primary dark:text-slate-300">
-                <i class="fa-solid fa-right-to-bracket text-xl"></i>
-                <span class="mt-1 text-xs">Login</span>
+            <!-- Primary Action: Join (Conversion Focal Point) -->
+            <a href="{% url 'register' %}" aria-label="Join Platform" class="flex flex-col items-center justify-center py-1 text-primary transition active:scale-95">
+                <div class="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white shadow-md shadow-primary/30">
+                    <i class="fa-solid fa-user-plus text-sm"></i>
+                </div>
             </a>
 
-            <a href="{% url 'register' %}" class="flex flex-col items-center py-3 text-primary">
-                <i class="fa-solid fa-user-plus text-xl"></i>
-                <span class="mt-1 text-xs">Join</span>
+            <!-- Login -->
+            <a href="{% url 'login' %}" data-nav-link class="flex flex-col items-center justify-center py-2.5 text-slate-600 transition hover:text-primary dark:text-slate-400 dark:hover:text-primary">
+                <i class="fa-solid fa-right-to-bracket text-lg"></i>
+                <span class="mt-1 text-[10px] font-medium tracking-tight">Login</span>
+            </a>
+
+            <!-- Guest Profile/Info Target -->
+            <a href="{% url 'login' %}" data-nav-link class="flex flex-col items-center justify-center py-2.5 text-slate-400 transition hover:text-primary dark:text-slate-500 dark:hover:text-primary">
+                <i class="fa-regular fa-circle-user text-lg"></i>
+                <span class="mt-1 text-[10px] font-medium tracking-tight">Guest</span>
             </a>
         </div>
     {% endif %}
-
 </nav>
