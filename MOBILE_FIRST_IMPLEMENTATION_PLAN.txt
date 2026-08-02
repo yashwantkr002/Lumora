@@ -1,0 +1,197 @@
+LUMORA MOBILE-FIRST EXPERIENCE IMPLEMENTATION PLAN
+=================================================
+
+Goal:
+Implement three features for the "Mobile-first experience" section:
+1. PWA support
+2. Push notifications
+3. Offline-friendly behavior
+
+Recommended order:
+1. Add PWA support first
+2. Add offline behavior next
+3. Add push notifications last
+
+-------------------------------------------------
+1. PWA SUPPORT
+-------------------------------------------------
+A. Prepare the project
+- Make sure the site is served over HTTPS in development and production.
+- Install the required packages:
+  pip install whitenoise
+  pip install django-push-notifications
+  pip install pywebpush
+- Add them to requirements.txt.
+
+B. Add a web app manifest
+- Create a file: static/manifest.json
+- Add basic fields:
+  - name
+  - short_name
+  - start_url
+  - display
+  - background_color
+  - theme_color
+  - icons
+- Create icon files in static/images/ or static/icons/.
+
+C. Update the base template
+- In templates/base.html, add these tags inside the head section:
+  - link rel="manifest" href="{% static 'manifest.json' %}"
+  - meta name="theme-color" content="#6366F1"
+  - meta name="apple-mobile-web-app-capable" content="yes"
+  - meta name="apple-mobile-web-app-status-bar-style" content="default"
+
+D. Register a service worker
+- Create a file: static/js/core/service-worker.js
+- Register it from static/js/core/app.js on page load.
+- Example flow:
+  - check if 'serviceWorker' exists in navigator
+  - register '/static/js/core/service-worker.js'
+  - if registration succeeds, log success
+
+E. Add install prompt support
+- In static/js/core/app.js, listen for the beforeinstallprompt event.
+- Show a small install button/banner when the app is not already installed.
+- Save the event and trigger it later when the user clicks install.
+
+-------------------------------------------------
+2. OFFLINE-FRIENDLY BEHAVIOR
+-------------------------------------------------
+A. Cache the app shell
+- In service-worker.js, cache these files on install:
+  - /
+  - /static/css/premium.css
+  - /static/js/core/app.js
+  - /static/manifest.json
+  - basic images and fonts used by the site
+- Use a cache-first or stale-while-revalidate strategy for static assets.
+
+B. Add offline fallback page
+- Create a simple page: templates/offline.html
+- In the service worker, if a navigation request fails and there is no network, return the offline page.
+
+C. Improve mobile experience
+- Make sure the mobile navigation is visible and works well on small screens.
+- Keep the app shell lightweight so it loads fast offline.
+- Cache only the most important pages and assets first.
+
+D. Test offline behavior
+- Open the site in Chrome.
+- Use DevTools > Application > Service Workers.
+- Check that the app still loads after disabling network.
+
+-------------------------------------------------
+3. PUSH NOTIFICATIONS
+-------------------------------------------------
+A. Create a subscription model
+- Create a new model for user notification subscriptions.
+- Fields should include:
+  - user
+  - endpoint
+  - p256dh
+  - auth
+  - created_at
+- Put the model under app/models/ or app/models/notification.py.
+
+B. Add subscription endpoints
+- Create Django views for:
+  - subscribe endpoint
+  - unsubscribe endpoint
+- Add URLs in app/urls/notification_urls.py or a new URL file.
+- The subscribe view should save the browser subscription data for the logged-in user.
+
+C. Configure VAPID keys
+- Generate VAPID keys.
+- Store them in environment variables:
+  - VAPID_PUBLIC_KEY
+  - VAPID_PRIVATE_KEY
+- Add them to settings/base.py.
+
+D. Add client-side subscription logic
+- In static/js/core/app.js, request permission from the browser:
+  - Notification.requestPermission()
+- If permission is granted, subscribe the browser to push notifications using the VAPID public key.
+- Send the subscription to your Django backend.
+
+E. Handle push events in the service worker
+- In service-worker.js, listen for push events.
+- Show a browser notification with title and message.
+- When the user clicks the notification, open the app.
+
+F. Send notifications from Django
+- Create a helper service to send push messages to all saved subscriptions.
+- Trigger it when important events happen, such as:
+  - new message
+  - new follow request
+  - new comment
+  - post like
+
+-------------------------------------------------
+4. FILES TO MODIFY
+-------------------------------------------------
+Main files and folders to work on:
+- templates/base.html
+- static/js/core/app.js
+- static/js/core/service-worker.js
+- static/manifest.json
+- Lumora/settings/base.py
+- app/urls/notification_urls.py
+- app/views/notification/
+- app/models/
+- requirements.txt
+
+-------------------------------------------------
+5. IMPLEMENTATION CHECKLIST
+-------------------------------------------------
+Phase 1: PWA basics
+- [ ] manifest.json created
+- [ ] base.html updated
+- [ ] service worker registered
+- [ ] install prompt works
+
+Phase 2: Offline support
+- [ ] app shell is cached
+- [ ] offline page is shown when network is unavailable
+- [ ] key pages can load offline
+
+Phase 3: Push notifications
+- [ ] permission prompt works
+- [ ] browser subscriptions are saved
+- [ ] push messages are sent from Django
+- [ ] notifications appear on mobile and desktop
+
+-------------------------------------------------
+6. TESTING PLAN
+-------------------------------------------------
+- Test on Chrome on Android and desktop
+- Test with network disabled
+- Test notification permission flow
+- Confirm the app can be installed to the home screen
+- Confirm the app opens correctly after installation
+
+-------------------------------------------------
+7. SIMPLE MVP VERSION
+-------------------------------------------------
+If you want a faster first version, start with this:
+- Add manifest.json
+- Add service worker with basic caching
+- Register service worker from app.js
+- Add offline fallback page
+- Add a simple notification permission prompt
+- Only support push for login and message notifications first
+
+-------------------------------------------------
+8. RECOMMENDED NEXT STEP
+-------------------------------------------------
+Start with these three tasks first:
+1. Create manifest.json and update base.html
+2. Create service-worker.js and register it
+3. Add an offline fallback page
+
+After that, add push notifications.
+
+-------------------------------------------------
+9. IMPORTANT NOTE
+-------------------------------------------------
+PWA features work best when the site is served over HTTPS and the app is deployed to a real domain. Local development may work partially, but full install and push features often need a production-like environment.
