@@ -170,7 +170,8 @@
           <div
             class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain pb-4 pr-2"
           >
-            {% if user.is_authenticated %} {% include "includes/sidebar.html" %}
+            {% if user.is_authenticated %} 
+            {% include "includes/sidebar.html" %}
             {% endif %}
           </div>
         </aside>
@@ -191,8 +192,7 @@
           <div
             class="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto overscroll-contain pb-4 pr-2"
           >
-            {% if user.is_authenticated %} {% include
-            "includes/right_sidebar.html" %} {% endif %}
+            {% if user.is_authenticated %} {% include "includes/right_sidebar.html" %}{% endif %}
           </div>
         </aside>
       </div>
