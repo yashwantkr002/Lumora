@@ -10,7 +10,6 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='default-secret-key-for-dev')
-DEBUG = False
 TAILWIND_APP_NAME = "theme"
 NPM_BIN_PATH = "npm.cmd"
 
