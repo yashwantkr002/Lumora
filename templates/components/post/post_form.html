@@ -239,6 +239,9 @@
     <button
         id="submit-post-btn"
         type="submit"
+        data-default-text="{{ submit_label|default:'Publish' }}"
+        data-loading-text="Uploading..."
+        aria-busy="false"
         class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-white transition duration-300 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
     >
 

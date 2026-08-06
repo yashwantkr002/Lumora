@@ -345,13 +345,28 @@ export class CreatePostController {
    * @param {boolean} loading
    */
   #toggleLoading(loading) {
+    if (!this.#submitButton) {
+      return;
+    }
+
+    const defaultText = this.#submitButton.dataset.defaultText ?? "Publish";
+    const loadingText = this.#submitButton.dataset.loadingText ?? "Uploading...";
+
     this.#submitButton.disabled = loading;
+    this.#submitButton.setAttribute("aria-busy", loading ? "true" : "false");
+    this.#submitButton.classList.toggle("is-loading", loading);
+
+    this.#form?.setAttribute("aria-busy", loading ? "true" : "false");
 
     this.#submitSpinner.hidden = !loading;
-
     this.#submitText.hidden = loading;
+    this.#submitText.textContent = loading ? loadingText : defaultText;
 
-    this.#progressWrapper.hidden = !loading;
+    if (this.#progressWrapper) {
+      this.#progressWrapper.hidden = !loading;
+      this.#progressBar.style.width = loading ? "100%" : "0%";
+      this.#progressText.textContent = loading ? loadingText : "0%";
+    }
   }
   /* ---------------------------------------------------------
  * Response Handlers
@@ -416,11 +431,18 @@ export class CreatePostController {
 
     this.#previewManager.clear().hide();
 
-    this.#progressBar.value = 0;
+    this.#progressBar.style.width = "0%";
 
     this.#progressText.textContent = "0%";
 
     this.#progressWrapper.hidden = true;
+
+    this.#submitButton.disabled = false;
+    this.#submitButton.setAttribute("aria-busy", "false");
+    this.#submitButton.classList.remove("is-loading");
+    this.#submitSpinner.hidden = true;
+    this.#submitText.hidden = false;
+    this.#submitText.textContent = this.#submitButton.dataset.defaultText ?? "Publish";
 
 }
 }
