@@ -20,7 +20,6 @@ Features
 
 import logging
 import re
-from typing import Iterable
 
 from django.db import transaction
 from django.utils.text import slugify
@@ -29,6 +28,7 @@ from app.models.post import Post
 from app.models.post_media import PostMedia
 from app.models.tag import Tag
 from app.models.user import CustomUser
+from app.services.media.upload_service import UploadService
 
 logger = logging.getLogger(__name__)
 
@@ -129,6 +129,7 @@ class CreatePostService:
         media_files,
     ) -> None:
 
+        upload_service = UploadService()
         order = 1
 
         for file in media_files:
@@ -146,7 +147,12 @@ class CreatePostService:
                     PostMedia.MediaType.IMAGE
                 )
 
-                media.image = file
+                stored_file = upload_service.upload(
+                    file=file,
+                    folder="posts",
+                )
+
+                media.image = stored_file.path
 
             elif content_type.startswith("video/"):
 
@@ -154,14 +160,18 @@ class CreatePostService:
                     PostMedia.MediaType.VIDEO
                 )
 
-                media.video = file
+                stored_file = upload_service.upload(
+                    file=file,
+                    folder="posts",
+                )
+
+                media.video = stored_file.path
 
             else:
 
                 continue
 
-            media.full_clean()
-
+            media.clean()
             media.save()
 
             order += 1

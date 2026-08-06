@@ -2,6 +2,8 @@ from .base import *
 
 DEBUG = True
 
+STORAGES["staticfiles"]["BACKEND"] = "whitenoise.storage.CompressedStaticFilesStorage"
+
 # In development, allow localhost and default local hosts
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 

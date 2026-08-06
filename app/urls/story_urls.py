@@ -25,7 +25,7 @@ urlpatterns = [
     path(
         "<uuid:story_id>/",
         detail_story,
-        name="detail_story",
+        name="story_detail",
     ),
     path(
         "<uuid:story_id>/previous/",

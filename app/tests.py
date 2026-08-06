@@ -1,3 +1,4 @@
+import hashlib
 from datetime import timedelta
 from unittest.mock import Mock, patch
 
@@ -7,6 +8,7 @@ from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from app.core.storage.cloudinary import CloudinaryStorage
 from app.models.conversation import Conversation
 from app.models.notification import Notification
 from app.models.post import Post
@@ -14,31 +16,80 @@ from app.models.story import Story
 from app.models.user import UserProfile
 from app.services.chat.message import MessageService
 from app.services.like.toggle import LikeToggleService
-from app.services.media.media_service import MediaService
+from app.services.media.upload_service import UploadService
+from app.services.post.create import CreatePostService
 
 
-class MediaServiceTests(SimpleTestCase):
-    @patch("django.core.files.storage.default_storage.save", return_value="avatars/test-avatar.png")
-    def test_upload_media_to_field_uses_storage_and_sets_name(self, save_mock):
-        profile = UserProfile()
-        profile.save = Mock(return_value=None)
-
+class MediaServiceTests(TestCase):
+    @patch("app.core.storage.cloudinary.CloudinaryStorage.upload", return_value=Mock(path="avatars/test-avatar.png", provider="cloudinary"))
+    def test_upload_media_to_field_uses_storage_and_sets_name(self, upload_mock):
         uploaded_file = SimpleUploadedFile(
             "avatar.png",
             b"file-bytes",
             content_type="image/png",
         )
 
-        result = MediaService.upload_to_field(
-            profile,
-            "avatar",
-            uploaded_file,
-            folder="avatars",
+        service = UploadService()
+        result = service.upload(file=uploaded_file, folder="avatars")
+
+        self.assertEqual(result.path, "avatars/test-avatar.png")
+        self.assertEqual(result.provider, "cloudinary")
+        upload_mock.assert_called_once()
+
+    @patch("app.core.storage.cloudinary.cloudinary.uploader.upload", return_value={"public_id": "avatars/avatar", "secure_url": "https://example.com/avatar.png", "resource_type": "image", "bytes": 123, "width": 100, "height": 100, "version": 1, "format": "png"})
+    def test_cloudinary_upload_uses_deterministic_public_id(self, upload_mock):
+        storage = CloudinaryStorage()
+        uploaded_file = SimpleUploadedFile(
+            "avatar.png",
+            b"same-bytes",
+            content_type="image/png",
         )
 
-        self.assertEqual(result, profile.avatar)
-        self.assertTrue(profile.avatar.name.startswith("avatars/"))
-        save_mock.assert_called_once()
+        storage.upload(file=uploaded_file, folder="avatars")
+
+        expected_digest = hashlib.sha256(b"same-bytes").hexdigest()[:16]
+        self.assertEqual(
+            upload_mock.call_args.kwargs["public_id"],
+            f"avatars/avatar-{expected_digest}",
+        )
+
+    @patch("app.core.storage.cloudinary.cloudinary.uploader.upload", return_value={"public_id": "posts/post", "secure_url": "https://example.com/post.png", "resource_type": "image", "bytes": 123, "width": 100, "height": 100, "version": 1, "format": "png"})
+    def test_cloudinary_upload_uses_image_resource_type_for_images(self, upload_mock):
+        storage = CloudinaryStorage()
+        uploaded_file = SimpleUploadedFile(
+            "photo.png",
+            b"image-bytes",
+            content_type="image/png",
+        )
+
+        storage.upload(file=uploaded_file, folder="posts")
+
+        self.assertEqual(upload_mock.call_args.kwargs["resource_type"], "image")
+        uploaded_payload = upload_mock.call_args.args[0]
+        uploaded_payload.seek(0)
+        self.assertEqual(uploaded_payload.read(), b"image-bytes")
+
+    @patch("app.core.storage.cloudinary.CloudinaryStorage.upload", return_value=Mock(path="posts/test.png", provider="cloudinary"))
+    def test_create_post_media_uploads_once_per_file(self, upload_mock):
+        author = get_user_model().objects.create_user(
+            email="postmedia@example.com",
+            username="postmedia",
+            password="strongpass123",
+        )
+        post = Post.objects.create(author=author, caption="Media test")
+        uploaded_file = SimpleUploadedFile(
+            "photo.png",
+            b"file-bytes",
+            content_type="image/png",
+        )
+
+        CreatePostService._save_media(
+            post=post,
+            media_files=[uploaded_file],
+        )
+
+        self.assertEqual(post.media.count(), 1)
+        upload_mock.assert_called_once()
 
 
 class StoryDetailViewTests(TestCase):

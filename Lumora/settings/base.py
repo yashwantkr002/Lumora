@@ -119,10 +119,40 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+MEDIA_STORAGE_PROVIDER = "local"
+
+MEDIA_STORAGE_PROVIDER = "cloudinary"
+
+# 
+# -------------------------------------------------------
+# Media Validation
+# -------------------------------------------------------
+
+MEDIA_UPLOAD_FOLDERS = {
+
+    "avatars",
+
+    "covers",
+
+    "posts",
+
+    "stories",
+
+    "reels",
+
+}
+
+MEDIA_MAX_IMAGE_SIZE = 10 * 1024 * 1024
+
+MEDIA_MAX_VIDEO_SIZE = 200 * 1024 * 1024
+
+
+# 
+
 STORAGES = {
     'default': {
         'BACKEND': (
-            'cloudinary_storage.storage.MediaCloudinaryStorage'
+            'app.core.storage.cloudinary.CloudinaryStorage'
             if os.getenv('CLOUDINARY_CLOUD_NAME') and os.getenv('CLOUDINARY_API_KEY') and os.getenv('CLOUDINARY_API_SECRET')
             else 'django.core.files.storage.FileSystemStorage'
         )

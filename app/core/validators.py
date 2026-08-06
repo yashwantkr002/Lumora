@@ -1,57 +1,36 @@
 from django.core.exceptions import ValidationError
 
 
-def validate_image_size(file):
-    max_size = 10 * 1024 * 1024  # 10MB
+def validate_avatar(file):
+    if not file:
+        return
+    if getattr(file, "size", 0) > 5 * 1024 * 1024:
+        raise ValidationError("Avatar image must be 5MB or less.")
 
-    if file.size > max_size:
-        raise ValidationError(
-            "Image size cannot exceed 10 MB."
-        )
+
+def validate_cover(file):
+    if not file:
+        return
+    if getattr(file, "size", 0) > 10 * 1024 * 1024:
+        raise ValidationError("Cover image must be 10MB or less.")
+
+
+def validate_image_size(file):
+    if not file:
+        return
+    if getattr(file, "size", 0) > 10 * 1024 * 1024:
+        raise ValidationError("Image size must be 10MB or less.")
+
+
+def validate_file_size(file, max_size):
+    if not file:
+        return
+    if getattr(file, "size", 0) > max_size:
+        raise ValidationError(f"File size must be {max_size} bytes or less.")
 
 
 def validate_video_size(file):
-    max_size = 100 * 1024 * 1024  # 100MB
-
-    if file.size > max_size:
-        raise ValidationError(
-            "Video size cannot exceed 100 MB."
-        )
-
-
-def validate_avatar(file):
-    allowed = [
-        "image/jpeg",
-        "image/png",
-        "image/webp",
-    ]
-
-    if file.content_type not in allowed:
-        raise ValidationError(
-            "Only JPG, PNG and WEBP images are allowed."
-        )
-
-    validate_image_size(file)
-
-
-def validate_file_size(file):
-    max_size = 10 * 1024 * 1024  # 10MB
-
-    if file.size > max_size:
-        raise ValidationError(
-            "File size cannot exceed 10 MB."
-        )
-    
-def validate_cover(file):
-    allowed = [
-        "image/jpeg",
-        "image/png",
-        "image/webp",
-    ]
-
-    if file.content_type not in allowed:
-        raise ValidationError(
-            "Only JPG, PNG and WEBP images are allowed."
-        )
-
-    validate_image_size(file)
+    if not file:
+        return
+    if getattr(file, "size", 0) > 200 * 1024 * 1024:
+        raise ValidationError("Video size must be 200MB or less.")
