@@ -33,6 +33,16 @@ from .cloudinary import CloudinaryStorage
 from .local import LocalStorage
 
 
+def _get_upload_path(folder: str) -> str:
+    """Resolve a media folder path from settings with a fallback."""
+
+    configured_paths = getattr(settings, "MEDIA_UPLOAD_PATHS", {})
+    if isinstance(configured_paths, dict) and folder in configured_paths:
+        return str(configured_paths[folder]).strip("/")
+
+    return folder.strip("/")
+
+
 class StorageFactory:
     """
     Resolve the configured storage backend.
@@ -63,4 +73,6 @@ class StorageFactory:
                 f"Unsupported storage provider: {provider}"
             )
 
-        return storage_class()
+        storage = storage_class()
+        storage.upload_path_prefix = _get_upload_path
+        return storage

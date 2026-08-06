@@ -119,9 +119,15 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-MEDIA_STORAGE_PROVIDER = "local"
-
 MEDIA_STORAGE_PROVIDER = "cloudinary"
+
+MEDIA_UPLOAD_PATHS = {
+    "avatars": "uploads/profile/avatars",
+    "covers": "uploads/profile/covers",
+    "posts": "uploads/posts",
+    "stories": "uploads/stories",
+    "videos": "uploads/videos",
+}
 
 # 
 # -------------------------------------------------------
@@ -129,17 +135,11 @@ MEDIA_STORAGE_PROVIDER = "cloudinary"
 # -------------------------------------------------------
 
 MEDIA_UPLOAD_FOLDERS = {
-
     "avatars",
-
     "covers",
-
     "posts",
-
     "stories",
-
     "reels",
-
 }
 
 MEDIA_MAX_IMAGE_SIZE = 10 * 1024 * 1024

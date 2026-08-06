@@ -2,13 +2,16 @@ import hashlib
 from datetime import timedelta
 from unittest.mock import Mock, patch
 
+import tempfile
+
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import SimpleTestCase, TestCase
+from django.test import SimpleTestCase, TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
 from app.core.storage.cloudinary import CloudinaryStorage
+from app.core.storage.local import LocalStorage
 from app.models.conversation import Conversation
 from app.models.notification import Notification
 from app.models.post import Post
@@ -21,6 +24,28 @@ from app.services.post.create import CreatePostService
 
 
 class MediaServiceTests(TestCase):
+    @override_settings(MEDIA_UPLOAD_PATHS={"avatars": "uploads/profile/avatars", "posts": "uploads/posts"})
+    def test_local_storage_upload_uses_configured_folder_path(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            with self.settings(
+                MEDIA_ROOT=temp_dir,
+                STORAGES={
+                    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+                    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+                },
+            ):
+                storage = LocalStorage()
+                uploaded_file = SimpleUploadedFile(
+                    "avatar.png",
+                    b"avatar-bytes",
+                    content_type="image/png",
+                )
+
+                result = storage.upload(file=uploaded_file, folder="avatars")
+
+                self.assertTrue(result.path.startswith("uploads/profile/avatars/"))
+                self.assertTrue(result.path.endswith(".png"))
+
     @patch("app.core.storage.cloudinary.CloudinaryStorage.upload", return_value=Mock(path="avatars/test-avatar.png", provider="cloudinary"))
     def test_upload_media_to_field_uses_storage_and_sets_name(self, upload_mock):
         uploaded_file = SimpleUploadedFile(
@@ -50,7 +75,7 @@ class MediaServiceTests(TestCase):
         expected_digest = hashlib.sha256(b"same-bytes").hexdigest()[:16]
         self.assertEqual(
             upload_mock.call_args.kwargs["public_id"],
-            f"avatars/avatar-{expected_digest}",
+            f"uploads/profile/avatars/avatar-{expected_digest}",
         )
 
     @patch("app.core.storage.cloudinary.cloudinary.uploader.upload", return_value={"public_id": "posts/post", "secure_url": "https://example.com/post.png", "resource_type": "image", "bytes": 123, "width": 100, "height": 100, "version": 1, "format": "png"})

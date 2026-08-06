@@ -26,8 +26,9 @@ import uuid
 
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import UploadedFile
-from .types import StoredFile
+
 from .base import BaseStorage
+from .types import StoredFile
 
 logger = logging.getLogger(__name__)
 
@@ -44,9 +45,11 @@ class LocalStorage(BaseStorage):
         folder: str,
     ) -> str:
 
+        resolved_folder = self.resolve_folder(folder)
+
         filename = self._generate_filename(
             file=file,
-            folder=folder,
+            folder=resolved_folder,
         )
 
         saved_path = default_storage.save(
@@ -103,6 +106,25 @@ class LocalStorage(BaseStorage):
     ) -> str:
 
         return default_storage.url(file_path)
+
+    def metadata(
+        self,
+        *,
+        file_path: str,
+    ) -> StoredFile:
+        return StoredFile(
+            provider="local",
+            path=file_path,
+            url=self.url(file_path=file_path),
+            filename=os.path.basename(file_path),
+            content_type=None,
+            size=None,
+            width=None,
+            height=None,
+            public_id=file_path,
+            version=None,
+            format=None,
+        )
 
     # -----------------------------------------------------
     # Helpers

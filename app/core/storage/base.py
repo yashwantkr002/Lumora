@@ -23,8 +23,11 @@ from __future__ import annotations
 
 from abc import ABC
 from abc import abstractmethod
-from .types import StoredFile
+
+from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
+
+from .types import StoredFile
 
 
 class BaseStorage(ABC):
@@ -32,6 +35,14 @@ class BaseStorage(ABC):
     Storage backend contract.
     """
 
+    def resolve_folder(self, folder: str) -> str:
+        """Resolve a configured upload path for a media category."""
+
+        configured_paths = getattr(settings, "MEDIA_UPLOAD_PATHS", {})
+        if isinstance(configured_paths, dict) and folder in configured_paths:
+            return str(configured_paths[folder]).strip("/")
+
+        return folder.strip("/")
 
     @abstractmethod
     def upload(

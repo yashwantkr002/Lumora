@@ -40,10 +40,11 @@ class CloudinaryStorage(BaseStorage):
         folder: str,
     ) -> StoredFile:
 
+        resolved_folder = self.resolve_folder(folder)
+
         file_name = Path(file.name).stem or "upload"
-        file_extension = Path(file.name).suffix.lower().lstrip(".")
         digest = hashlib.sha256(file.read()).hexdigest()[:16]
-        public_id = f"{folder}/{file_name}-{digest}"
+        public_id = f"{resolved_folder}/{file_name}-{digest}"
 
         file.seek(0)
 
@@ -53,7 +54,7 @@ class CloudinaryStorage(BaseStorage):
 
         result = cloudinary.uploader.upload(
             file,
-            folder=folder,
+            folder=resolved_folder,
             public_id=public_id,
             resource_type=resource_type,
             overwrite=True,
