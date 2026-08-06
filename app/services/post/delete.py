@@ -22,6 +22,7 @@ from django.core.exceptions import PermissionDenied
 from django.db import transaction
 
 from app.models.post import Post
+from app.services.media.upload_service import UploadService
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +58,18 @@ class DeletePostService:
             raise PermissionDenied(
                 "You are not allowed to delete this post."
             )
+
+        # -------------------------------------------------------
+        # Delete attached media from storage
+        # -------------------------------------------------------
+
+        upload_service = UploadService()
+
+        for media in post.media.all():
+            if media.image:
+                upload_service.delete(file_path=media.image.name)
+            if media.video:
+                upload_service.delete(file_path=media.video.name)
 
         # -------------------------------------------------------
         # Soft Delete

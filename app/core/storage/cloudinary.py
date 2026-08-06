@@ -85,13 +85,16 @@ class CloudinaryStorage(BaseStorage):
         *,
         file_path: str,
     ) -> None:
+        if not file_path:
+            return
+
+        public_id = file_path
+        if public_id.startswith("http://") or public_id.startswith("https://"):
+            public_id = public_id.split("/")[-1].split(".")[0]
 
         cloudinary.uploader.destroy(
-
-            file_path,
-
+            public_id,
             invalidate=True,
-
         )
 
     def exists(
