@@ -34,6 +34,8 @@ EXTERNAL_APPS = [
     "theme",
     'django.contrib.sites',
     'allauth',
+    'cloudinary',
+    'cloudinary_storage',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
