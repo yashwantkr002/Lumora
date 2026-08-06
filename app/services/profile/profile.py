@@ -19,6 +19,7 @@ from django.shortcuts import get_object_or_404
 
 from app.models.follow import UserFollow
 from app.services.auth.activity import ActivityService
+from app.services.media.media_service import MediaService
 
 logger = logging.getLogger(__name__)
 
@@ -93,12 +94,20 @@ class ProfileService:
         )
 
         if files.get("avatar"):
-
-            profile.avatar = files["avatar"]
+            MediaService.upload_to_field(
+                profile,
+                "avatar",
+                files["avatar"],
+                folder="avatars",
+            )
 
         if files.get("cover_image"):
-
-            profile.cover_image = files["cover_image"]
+            MediaService.upload_to_field(
+                profile,
+                "cover_image",
+                files["cover_image"],
+                folder="covers",
+            )
 
         profile.save(
             update_fields=[

@@ -1,7 +1,9 @@
 from datetime import timedelta
+from unittest.mock import Mock, patch
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
@@ -12,6 +14,31 @@ from app.models.story import Story
 from app.models.user import UserProfile
 from app.services.chat.message import MessageService
 from app.services.like.toggle import LikeToggleService
+from app.services.media.media_service import MediaService
+
+
+class MediaServiceTests(SimpleTestCase):
+    @patch("django.core.files.storage.default_storage.save", return_value="avatars/test-avatar.png")
+    def test_upload_media_to_field_uses_storage_and_sets_name(self, save_mock):
+        profile = UserProfile()
+        profile.save = Mock(return_value=None)
+
+        uploaded_file = SimpleUploadedFile(
+            "avatar.png",
+            b"file-bytes",
+            content_type="image/png",
+        )
+
+        result = MediaService.upload_to_field(
+            profile,
+            "avatar",
+            uploaded_file,
+            folder="avatars",
+        )
+
+        self.assertEqual(result, profile.avatar)
+        self.assertTrue(profile.avatar.name.startswith("avatars/"))
+        save_mock.assert_called_once()
 
 
 class StoryDetailViewTests(TestCase):
