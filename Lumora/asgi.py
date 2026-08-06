@@ -11,6 +11,7 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Lumora.settings.development')
-
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Lumora.settings.development')
+# for production, use the production settings module
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Lumora.settings.production')
 application = get_asgi_application()
