@@ -11,7 +11,14 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 TAILWIND_APP_NAME = "theme"
-NPM_BIN_PATH = "npm.cmd"
+import platform
+
+
+
+if platform.system() == "Windows":
+    NPM_BIN_PATH = "npm.cmd"
+else:
+    NPM_BIN_PATH = "/usr/local/bin/npm"
 
 INSTALLED_APPS = [
     'django.contrib.admin',

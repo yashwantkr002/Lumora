@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ['python3', 'nodejs', 'npm']
+
+[phases.build]
+cmds = [
+  'python manage.py tailwind build',
+  'python manage.py collectstatic --noinput'
+]
