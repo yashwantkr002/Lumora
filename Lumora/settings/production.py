@@ -2,7 +2,8 @@ from .base import *
 
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
 
-DEBUG = env.bool("DJANGO_DEBUG", default=False)
+DEBUG = env.bool("DJANGO_DEBUG", default=env.bool("DEBUG", default=False))
+
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 SECURE_SSL_REDIRECT = True
