@@ -40,8 +40,7 @@ EXTERNAL_APPS = [
 
 INSTALLED_APPS += EXTERNAL_APPS
 
-if DEBUG:
-    INSTALLED_APPS += ["django_browser_reload"]
+
 AUTH_USER_MODEL = 'app.CustomUser'
 
 MIDDLEWARE = [
@@ -55,10 +54,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
-if DEBUG:
-    MIDDLEWARE += [
-        "django_browser_reload.middleware.BrowserReloadMiddleware"
-    ]
+
 
 ROOT_URLCONF = 'Lumora.urls'
 
