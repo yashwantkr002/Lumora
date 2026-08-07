@@ -10,8 +10,10 @@ https://docs.djangoproject.com/en/5.1/howto/deployment/wsgi/
 import os
 
 from django.core.wsgi import get_wsgi_application
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Lumora.settings.development')
-# for production, use the production settings module
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Lumora.settings.production')
+
+os.environ.setdefault(
+    'DJANGO_SETTINGS_MODULE',
+    os.getenv('DJANGO_SETTINGS_MODULE', 'Lumora.settings.development')
+)
 
 application = get_wsgi_application()
