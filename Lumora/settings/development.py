@@ -1,5 +1,5 @@
 from .base import *
-DEBUG = env.bool("DJANGO_DEBUG", default=False)
+DEBUG = False
 
 
 ALLOWED_HOSTS = env.list(
