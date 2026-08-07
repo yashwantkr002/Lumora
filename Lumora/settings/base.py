@@ -36,11 +36,12 @@ EXTERNAL_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.github',
-    'django_browser_reload',
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
 
+if DEBUG:
+    INSTALLED_APPS += ["django_browser_reload"]
 AUTH_USER_MODEL = 'app.CustomUser'
 
 MIDDLEWARE = [
@@ -53,8 +54,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-    'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
+if DEBUG:
+    MIDDLEWARE += [
+        "django_browser_reload.middleware.BrowserReloadMiddleware"
+    ]
 
 ROOT_URLCONF = 'Lumora.urls'
 
