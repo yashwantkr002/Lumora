@@ -1,15 +1,9 @@
 from .base import *
-
-DEBUG = False
-
-STORAGES["staticfiles"]["BACKEND"] = "whitenoise.storage.CompressedStaticFilesStorage"
-
-# In development, allow localhost and default local hosts
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
-
-# Override any production-only settings if needed
-# For example:
-# DATABASES['default']['HOST'] = 'localhost'
+DEBUG = True
 
 
-# Add development-specific apps or middleware if required
+ALLOWED_HOSTS = env.list(
+    'DJANGO_ALLOWED_HOSTS',
+    default=['127.0.0.1', 'localhost']
+)
+

@@ -6,7 +6,10 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Lumora.settings.development',)
+    # this is for development seting
+    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Lumora.settings.development',)
+    # this is for production setting
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Lumora.settings.production')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

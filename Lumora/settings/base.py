@@ -9,14 +9,9 @@ env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
-SECRET_KEY = env('DJANGO_SECRET_KEY', default='default-secret-key-for-dev')
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 TAILWIND_APP_NAME = "theme"
 NPM_BIN_PATH = "npm.cmd"
-
-ALLOWED_HOSTS = env.list(
-    'DJANGO_ALLOWED_HOSTS',
-    default=['127.0.0.1', 'localhost']
-)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -83,14 +78,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Lumora.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-    }
+    'default': env.db()
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -153,7 +141,7 @@ STORAGES = {
     'default': {
         'BACKEND': (
             'app.core.storage.cloudinary.CloudinaryStorage'
-            if os.getenv('CLOUDINARY_CLOUD_NAME') and os.getenv('CLOUDINARY_API_KEY') and os.getenv('CLOUDINARY_API_SECRET')
+            if env('CLOUDINARY_CLOUD_NAME') and env('CLOUDINARY_API_KEY') and env('CLOUDINARY_API_SECRET')
             else 'django.core.files.storage.FileSystemStorage'
         )
     },
@@ -168,8 +156,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 SITE_ID = 1
 AUTHENTICATION_BACKENDS = [
@@ -187,7 +175,10 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS",
+    default=[]
+)
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
