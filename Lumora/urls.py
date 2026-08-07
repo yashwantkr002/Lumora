@@ -30,9 +30,8 @@ urlpatterns = [
     path('.well-known/appspecific/com.chrome.devtools.json', chrome_devtools_json),
     # -------------------------------------------------------
     #    This is the main URL 
-    # -------------------------------------------------------
-    path("", lambda request: HttpResponse("Railway OK")),
-    path("/", include("app.urls.auth_urls")),
+    # -------------------------------------------------------,
+    path("", include("app.urls.auth_urls")),
     # ------------------------------------------------------
     path("posts/", include("app.urls.post_urls")),
     path("chat/", include("app.urls.chat_urls")),
