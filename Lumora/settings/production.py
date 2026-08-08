@@ -17,7 +17,3 @@ SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 SECURE_HSTS_PRELOAD = True
-
-if DEBUG:
-    INSTALLED_APPS += ["django_browser_reload"]
-    MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]

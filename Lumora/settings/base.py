@@ -6,19 +6,13 @@ import environ
 # load_dotenv()
 
 env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 TAILWIND_APP_NAME = "theme"
+
 import platform
-
-
-
-if platform.system() == "Windows":
-    NPM_BIN_PATH = "npm.cmd"
-else:
-    NPM_BIN_PATH = "/usr/local/bin/npm"
+NPM_BIN_PATH = "npm.cmd" if platform.system() == "Windows" else "npm"
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -121,7 +115,7 @@ MEDIA_UPLOAD_PATHS = {
     "covers": "uploads/profile/covers",
     "posts": "uploads/posts",
     "stories": "uploads/stories",
-    "videos": "uploads/videos",
+    "videos": "uploads/reels",
 }
 
 # 
@@ -145,16 +139,8 @@ MEDIA_MAX_VIDEO_SIZE = 200 * 1024 * 1024
 # 
 
 STORAGES = {
-    'default': {
-        'BACKEND': (
-            'app.core.storage.cloudinary.CloudinaryStorage'
-            if env('CLOUDINARY_CLOUD_NAME') and env('CLOUDINARY_API_KEY') and env('CLOUDINARY_API_SECRET')
-            else 'django.core.files.storage.FileSystemStorage'
-        )
-    },
-    'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
-    },
+    'default': {'BACKEND': 'app.core.storage.cloudinary.CloudinaryStorage'},
+    'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
