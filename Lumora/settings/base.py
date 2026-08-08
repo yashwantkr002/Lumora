@@ -138,9 +138,16 @@ MEDIA_MAX_VIDEO_SIZE = 200 * 1024 * 1024
 
 # 
 
+# Lumora/settings/production.py
+
 STORAGES = {
-    'default': {'BACKEND': 'app.core.storage.cloudinary.CloudinaryStorage'},
-    'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
+    'default': {
+        'BACKEND': 'app.core.storage.cloudinary.CloudinaryStorage' if env('CLOUDINARY_CLOUD_NAME', default=None) else 'django.core.files.storage.FileSystemStorage'
+    },
+    'staticfiles': {
+        # Manifest hatakar CompressedStaticFilesStorage kar diya hai
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+    },
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
