@@ -1,22 +1,15 @@
 """
 ===========================================================
 File: app/services/auth/email.py
-===========================================================
 
 PURPOSE
-
 Centralized Email Service.
-
 Only this file should send emails.
-
-All other services (Registration, Password, etc.)
-must call this service instead of calling send_mail()
-directly.
-
 ===========================================================
 """
 
 import logging
+import threading
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -30,34 +23,19 @@ class EmailService:
     Handles all outgoing emails.
     """
 
-    # -------------------------------------------------------
-    # FIX #1
-    #
-    # Centralized send_mail().
-    #
-    # Every email in the project goes through this method.
-    #
-    # Benefits
-    #
-    # • One place for logging
-    # • One place for exception handling
-    # • Easy to switch to Celery later
-    # • Easy to switch SMTP provider
-    #
-    # -------------------------------------------------------
-
     @staticmethod
-    def send_email(
-        *,
+    def _send_email_task(
         subject: str,
         recipient: str,
         template: str,
         context: dict,
         plain_message: str,
-    ) -> bool:
-
+    ) -> None:
+        """
+        Internal worker method executed in a separate thread.
+        Handles template rendering and SMTP execution off the main request thread.
+        """
         try:
-
             html_message = render_to_string(
                 template,
                 context,
@@ -80,10 +58,7 @@ class EmailService:
                 },
             )
 
-            return True
-
         except Exception:
-
             logger.exception(
                 "Failed to send email.",
                 extra={
@@ -92,13 +67,47 @@ class EmailService:
                 },
             )
 
+    @staticmethod
+    def send_email(
+        *,
+        subject: str,
+        recipient: str,
+        template: str,
+        context: dict,
+        plain_message: str,
+    ) -> bool:
+        """
+        Dispatches email sending to a background thread to prevent
+        SMTP network delays from blocking Gunicorn workers.
+        """
+        try:
+            # Fires the email dispatch in a background thread
+            thread = threading.Thread(
+                target=EmailService._send_email_task,
+                kwargs={
+                    "subject": subject,
+                    "recipient": recipient,
+                    "template": template,
+                    "context": context,
+                    "plain_message": plain_message,
+                },
+                daemon=True,  # Daemon thread automatically cleans up
+            )
+            thread.start()
+            return True
+
+        except Exception:
+            logger.exception(
+                "Failed to dispatch email thread.",
+                extra={
+                    "recipient": recipient,
+                    "subject": subject,
+                },
+            )
             return False
 
     # -------------------------------------------------------
-    # FIX #2
-    #
     # Welcome Email
-    #
     # -------------------------------------------------------
 
     @staticmethod
@@ -123,10 +132,7 @@ class EmailService:
         )
 
     # -------------------------------------------------------
-    # FIX #3
-    #
     # Verification Email
-    #
     # -------------------------------------------------------
 
     @staticmethod
@@ -148,10 +154,7 @@ class EmailService:
         )
 
     # -------------------------------------------------------
-    # FIX #4
-    #
     # Password Reset Email
-    #
     # -------------------------------------------------------
 
     @staticmethod
