@@ -150,16 +150,29 @@ STORAGES = {
     },
 }
 
+# ******************    
+import socket
+
+# Force IPv4 for SMTP connections
+orig_getaddrinfo = socket.getaddrinfo
+
+def getaddrinfo_ipv4_only(host, port, family=0, type=0, proto=0, flags=0):
+    return orig_getaddrinfo(host, port, socket.AF_INET, type, proto, flags)
+
+socket.getaddrinfo = getaddrinfo_ipv4_only
+
+# ************************
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = env.int('EMAIL_PORT', 587)
-EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', 'True').lower() == 'true'
-EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL', 'False').lower() == 'true'
+EMAIL_HOST = env.str('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL', default=False)
 EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
-EMAIL_TIMEOUT = 5
+EMAIL_TIMEOUT = 10
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
