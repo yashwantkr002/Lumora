@@ -8,13 +8,11 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent
 env = environ.Env()
 env.read_env(os.path.join(BASE_DIR, '.env'))
-
-
 def main():
     """Run administrative tasks."""
     os.environ.setdefault(
         'DJANGO_SETTINGS_MODULE',
-        os.getenv('DJANGO_SETTINGS_MODULE', 'Lumora.settings.development')
+        os.getenv('DJANGO_SETTINGS_MODULE','Lumora.settings.development')
     )
     try:
         from django.core.management import execute_from_command_line
